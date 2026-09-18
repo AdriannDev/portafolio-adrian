@@ -1,0 +1,24 @@
+# Marco de desarrollo con IA — archivos locales que no se comitean
+CLAUDE.local.md
+.claude/settings.local.json
+.claude/claude-security-guidance.local.md
+
+# Secretos y entorno (mantén .env.example en el repo)
+.env
+.env.*
+!.env.example
+secrets/
+*.pem
+*.key
+
+# Dependencias y builds (ajusta al stack)
+node_modules/
+dist/
+build/
+.venv/
+__pycache__/
+*.pyc
+
+# Sistema
+.DS_Store
+Thumbs.db

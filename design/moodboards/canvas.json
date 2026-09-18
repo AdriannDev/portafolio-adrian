@@ -1,0 +1,18 @@
+{
+  "artboards": [
+    { "file": "UniverseMinimal.dc.html", "x": 0, "y": 0, "w": 1440, "h": 3120, "title": "01 · Universe Minimal" },
+    { "file": "MissionControl.dc.html", "x": 1560, "y": 0, "w": 1440, "h": 3120, "title": "02 · Mission Control" },
+    { "file": "CinematicUniverse.dc.html", "x": 3120, "y": 0, "w": 1440, "h": 3120, "title": "03 · Cinematic Universe" },
+    { "file": "Main.dc.html", "x": 0, "y": 3280, "w": 1440, "h": 1560, "title": "04 · Comparativa y recomendación" }
+  ],
+  "annotations": [
+    {
+      "id": "como-leer",
+      "x": 1560,
+      "y": 3280,
+      "w": 560,
+      "text": "MOODBOARDS · The Universe + Mission Control\n\n01–03: una dirección por artboard, con paleta y contrastes, tipografía en uso, referencias visuales, recursos gráficos, hero 1440 con el copy real y la mission card de M-001 EVOX.\n04: comparativa contra los criterios del brief y recomendación.\n\nTweak «Acento» sobre cada moodboard: Signal white · Amber · International Orange.\n\nLas texturas son generadas (stand-in). En producción se sustituyen por fotografía tratada de NASA / ESA / USGS."
+    }
+  ],
+  "launch": { "view": "canvas" }
+}

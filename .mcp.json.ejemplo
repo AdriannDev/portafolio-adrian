@@ -1,0 +1,15 @@
+{
+  "_comentario": "Ejemplo de configuración MCP a nivel de proyecto. Renombra a .mcp.json solo cuando decidas los servidores en la Fase 2. Los secretos van en variables de entorno (${VAR}), nunca en claro. Muchos servicios ya vienen como plugin (github, figma, supabase, sentry): prefiérelos.",
+  "mcpServers": {
+    "db-lectura": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@bytebase/dbhub", "--dsn", "${DATABASE_URL_READONLY}"]
+    },
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headers": { "Authorization": "Bearer ${GITHUB_PAT}" }
+    }
+  }
+}

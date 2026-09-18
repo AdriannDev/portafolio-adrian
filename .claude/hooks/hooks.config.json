@@ -1,0 +1,31 @@
+{
+  "_comentario": "Configuración de los hooks del kit. Edita este archivo, no los scripts. Rutas relativas a la raíz del proyecto.",
+  "pre_commit_test_command": "",
+  "format_on_edit": true,
+  "formatters": {
+    ".py": "ruff format {file}",
+    ".ts": "npx --no-install prettier --write {file}",
+    ".tsx": "npx --no-install prettier --write {file}",
+    ".js": "npx --no-install prettier --write {file}",
+    ".jsx": "npx --no-install prettier --write {file}",
+    ".json": "npx --no-install prettier --write {file}",
+    ".css": "npx --no-install prettier --write {file}",
+    ".go": "gofmt -w {file}",
+    ".rs": "rustfmt {file}"
+  },
+  "protected_patterns": [
+    ".env", ".env.local", ".env.development", ".env.production",
+    "secrets/", ".pem", ".key",
+    "package-lock.json", "pnpm-lock.yaml", "yarn.lock", "uv.lock", "poetry.lock",
+    ".git/"
+  ],
+  "protected_exceptions": [".env.example", ".env.sample"],
+  "destructive_patterns": [
+    "rm -rf", "rm -fr", "rm -r -f", "rm -f -r",
+    "git push --force", "git push -f", "git push --force-with-lease",
+    "git reset --hard", "git clean -f", "git clean -fd", "git checkout -- .",
+    "git branch -D", "drop table", "drop database", "truncate table",
+    "remove-item -recurse -force", "rmdir /s", "rd /s", "del /f /s", "format c:", "mkfs"
+  ],
+  "session_start_message": "Marco de desarrollo con IA activo. Antes de implementar: lee CLAUDE.md, la spec activa en docs/specs/ y usa plan mode para tareas que toquen más de un archivo."
+}
