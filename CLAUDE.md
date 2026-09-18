@@ -1,13 +1,12 @@
-# [NOMBRE DEL PROYECTO]
-
-<!-- Plantilla del marco _framework. Completa los [corchetes], borra lo que no aplique y mantén el archivo por debajo de 200 líneas. Los comentarios HTML no consumen contexto. -->
+# Portafolio Adrián · The Universe + Mission Control
 
 ## Qué es
-[Una o dos frases: qué hace el proyecto y para quién. Enlaza al brief.]
+Plataforma profesional personal de Adrián (desarrollo web, e-commerce, SEO, Google Ads, Analytics; Lima, Perú): portafolio evolutivo que presenta proyectos como "misiones", vende servicios a PYMES de Perú/LATAM y se mide a sí mismo (MISSION 000).
 Brief: docs/01-contexto/brief.md · Requerimientos: docs/01-contexto/requerimientos.md
+Origen (teoría previa al marco, en la raíz): plan_portfolio_universe_mission_control_v2.md (vigente; v1 superado) · design_brief_claude_design.md · design/moodboards/ (recomendación: híbrido Mission Control + tono Universe Minimal)
 
 ## Tier y proceso
-- Tier: [1 | 2 | 3] (ver docs/04 del marco). La DoD por tier está en checklists/dod-por-tier.md.
+- Tier: 2 (provisional; se confirma en Gate 1). Motivo: vende servicios a clientes reales, formulario con datos personales, KPIs de negocio. La DoD por tier está en checklists/dod-por-tier.md.
 - Este proyecto sigue el proceso SDD del marco: spec → plan → tasks → implementar → converger.
 - Spec activa: docs/specs/ACTIVA.md (actualízala al cambiar de feature).
 - Antes de implementar cualquier tarea que toque más de un archivo: plan mode.
@@ -30,8 +29,8 @@ Brief: docs/01-contexto/brief.md · Requerimientos: docs/01-contexto/requerimien
 - Build: `[ ]`
 
 ## Convenciones
-- Idioma: respuestas y documentación en español; identificadores de código en [inglés | español]; textos de UI y contenido en [español].
-- Commits: Conventional Commits (`feat:`, `fix:`, `docs:`, `test:`, `refactor:`, `chore:`), en [español|inglés], imperativo.
+- Idioma: respuestas y documentación en español; identificadores de código en inglés; textos de UI y contenido en español (los "system labels" en inglés — SYSTEM ONLINE, MISSION, STATUS — son capa visual y nunca portan información crítica).
+- Commits: Conventional Commits (`feat:`, `fix:`, `docs:`, `test:`, `refactor:`, `chore:`), en inglés, imperativo.
 - Ramas: `main` siempre desplegable; una rama `feat/NNN-nombre` por spec.
 - Estructura: [capas o módulos principales y dónde va cada cosa, en 3–6 líneas]
 - Estilo: [solo lo que difiera del default del formateador]
