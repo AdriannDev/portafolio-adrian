@@ -82,7 +82,7 @@ Identidad: el **nombre del archivo** es el identificador y la dirección: `conte
 | `client.sector` | string | sí | 1–60 | CA-04.6 |
 | `client.name` | string | no | 1–60; exige `client.authorization` | Regla 14 |
 | `client.authorization` | referencia a `evidence` | no | entrada de tipo `client-authorization` | Regla 14 |
-| `category` | enum | sí | `ecommerce` · `corporate` · `portfolio` · `landing` · `webapp` · `platform` | CA-03.1, CA-03.2 |
+| `category` | enum | sí | `ecommerce` · `corporate` · `portfolio` · `landing` · `webapp` · `automation` · `platform` | CA-03.1, CA-03.2 |
 | `services` | referencias a `services` | sí | 1 o más, sin repetidos | CA-02.2, CA-04.2 |
 | `year` | entero | sí | 2015 ≤ año ≤ año actual | CA-03.1 |
 | `period` | objeto | sí | `start` y `end` en `AAAA-MM`; `end` opcional (en curso) y ≥ `start` | CA-04.2 |
@@ -151,7 +151,7 @@ Incrustada en `Project.metrics`.
 
 ### 3.3 Service
 
-Identidad: el nombre del archivo (`desarrollo-web`, `ecommerce`, `seo`, `google-ads`, `analitica`). Se usa como ancla en `/services#desarrollo-web` y servirá de dirección a las páginas individuales de la v1.1.
+Identidad: el nombre del archivo (`desarrollo-web`, `ecommerce`, `automatizacion`, `seo`, `analitica`). Se usa como ancla en `/services#desarrollo-web` y servirá de dirección a las páginas individuales de la v1.1.
 
 | Campo | Tipo | Obligatorio | Restricciones | Requisito |
 |---|---|---|---|---|

@@ -10,20 +10,23 @@
 | Fecha | 2026-09-26 |
 | Estado | Aprobado |
 | Dirección | **Híbrido**, elegido tras los moodboards (`design/moodboards/`, artboard 04) |
+| Referencia visual | Portada en `design/portada-universo/` (§14) |
+| Cambios | 2026-09-26: fondo estrellado en todo el sitio (§13), tokens de estrellas, horizonte del hero y correcciones a la portada de referencia (§14) |
 | Requisitos que sostiene | RNF-03 (accesibilidad), RNF-01 (fuentes y peso), RNF-08 (idioma de las etiquetas), CA-01.4, CA-N05.3 |
 | Reglas de la constitución | 6 (sin literales), 10 (texto como elemento principal), 12 (solo `transform` y `opacity`), 23–27 |
 
 ## 1. Dirección: el híbrido
 
-**El sistema de Mission Control con el tono de Universe Minimal, y un único momento cinematográfico.**
+**El sistema de Mission Control con el tono de Universe Minimal, bajo un cielo estrellado, y un único momento cinematográfico.**
 
 | Tomado de | Qué | Dónde se nota |
 |---|---|---|
-| Universe Minimal · el tono | Serif display para enunciados y títulos; fondo plano; contención; casi sin fotografía | Todo el sitio |
+| Universe Minimal · el tono | Serif display para enunciados y títulos; superficies planas; contención; casi sin fotografía | Todo el sitio |
 | Mission Control · el sistema | Labels mono, panel de telemetría, indicadores de estado, retícula visible **solo donde organiza datos** | Ficha de misión, listado, cabecera, pie |
-| Cinematic Universe · un momento | Gradiente profundo con grano en el hero; transición lenta entre páginas | Portada; navegación entre páginas |
+| Portada de referencia · el cielo | Fondo estrellado procedural, fijo detrás de todas las páginas (§13) | Todo el sitio |
+| Cinematic Universe · un momento | Gradiente profundo, horizonte planetario y grano en el hero; transición lenta entre páginas | Portada; navegación entre páginas |
 
-Lo que **no** se toma: fotografía a sangre, texturas espaciales de fondo, retícula como papel pintado, tipografía display en mayúsculas, acento ámbar.
+Lo que **no** se toma: fotografía a sangre, imágenes espaciales de fondo (el cielo es procedural y ligero, §13), retícula como papel pintado, tipografía display en mayúsculas, acento ámbar.
 
 ### Reglas de dirección
 
@@ -58,7 +61,9 @@ Verificables en revisión de diseño y de código:
 | `success` | `#6FB583` | Estado correcto | Disponible, verificado, envío correcto |
 | `warning` | `#E2BD4F` | Aviso | Agenda limitada, proyecto en desarrollo |
 | `danger` | `#F2666F` | Error | Errores de formulario, sin disponibilidad |
-| `overlay` | `rgb(11 13 18 / 0.8)` | Velo | Detrás de la consola y del menú móvil; bajo texto sobre imagen (CA-N03.7) |
+| `overlay` | `rgb(11 13 18 / 0.8)` | Velo | Detrás de la consola y del menú móvil; bajo texto sobre imagen (CA-N03.7); fondo de la cabecera |
+| `star-cool` | `#C4D4FF` | Estrella fría | Solo el fondo estrellado (§13). Decorativo |
+| `star-warm` | `#FFE0C8` | Estrella cálida | Solo el fondo estrellado (§13). Decorativo |
 
 Se eligió International Orange sobre ámbar porque el ámbar coincide con el color semántico de aviso, que el sistema de estados necesita. Cambiar el acento es cambiar un token.
 
@@ -82,7 +87,7 @@ Calculada con la fórmula de WCAG 2.x el 2026-09-26. Una prueba unitaria la reca
 
 **Texto sobre acento** (mínimo 4,5:1): `accent-fg` sobre `accent` 6,23; sobre `accent-hover` 7,52.
 
-**Decorativas** (sin mínimo, por diseño): `line` 1,08–1,30 y `line-strong` 1,45–1,73. Nunca son la única pista de que algo es un control; para eso existe `line-control`.
+**Decorativas** (sin mínimo, por diseño): `line` 1,08–1,30 y `line-strong` 1,45–1,73. Nunca son la única pista de que algo es un control; para eso existe `line-control`. `star-cool` y `star-warm` solo colorean estrellas del fondo: nunca texto ni controles.
 
 Consecuencia práctica: **cualquier token de texto es legible sobre cualquier fondo del sistema**. No hay combinaciones prohibidas que recordar.
 
@@ -225,6 +230,10 @@ Reglas:
 | Abrir la consola o el menú | Opacidad, 240 ms | Opacidad, 120 ms: comunica cambio de estado |
 | Indicador «disponible» | Pulso de opacidad | Punto fijo |
 | Valores de telemetría | Cuentan hasta la cifra | Cifra final directa |
+| Cielo: parpadeo | Opacidad de las estrellas medianas y cercanas (§13) | Cielo quieto |
+| Cielo: estrellas fugaces | Una cada 6–15 s, trazo de 1,1 s | Ninguna |
+| Cielo: paralaje | Capas al 1,2 %, 3 % y 5,5 % del desplazamiento | Ninguno |
+| Desplazamiento a un ancla | Suave | Instantáneo |
 
 ## 7. Capas (z-index)
 
@@ -373,11 +382,17 @@ Carpetas según `docs/02-arquitectura/arquitectura.md`. Los estados `hover` y `f
 - Anuncio de los cambios de estado en una región `aria-live` (CA-N03.4).
 - Sin JavaScript, el formulario no puede pasar la verificación anti-automatización: se muestra un aviso con WhatsApp y correo como alternativa.
 
+**Header**
+- Fijo arriba, 72 px de alto, fondo `overlay` y borde inferior `line`. **Sin desenfoque de fondo** (§13.2).
+- Desde 1024 px: marca (círculo con punto y nombre público), `MainNav` numerada, indicador de disponibilidad (desde 1180 px) y botón de la consola («Ctrl K» o «⌘ K» como texto en mono).
+- Por debajo de 1024 px: marca, **acceso a WhatsApp** y **botón de menú** que abre `MobileNav` (CA-N03.2, CA-08.4). La portada de referencia no los tenía (§14).
+
 **Hero**
-- Etiqueta decorativa `SYSTEM ONLINE`; `h1` con la declaración de posicionamiento (`profile.positioning`, 120 caracteres como máximo, CA-01.1) y su palabra de énfasis en cursiva y acento; nombre público; entradilla con las cinco áreas de trabajo.
+- Etiqueta decorativa `SYSTEM ONLINE` y coordenadas; `h1` con la declaración de posicionamiento (`profile.positioning`, 120 caracteres como máximo, CA-01.1) y su palabra de énfasis en cursiva y acento; nombre público y ubicación; entradilla con las cinco áreas de trabajo.
 - **Acción primaria: «Escribir por WhatsApp»**; secundaria: «Ver proyectos». Los moodboards invertían el orden; CA-01.1 exige el acceso a WhatsApp visible sin desplazar.
-- Todo lo anterior cabe sin desplazar en una ventana de **360 × 640 px** (verificable en la spec con Playwright).
-- Fondo: gradiente radial de `surface-hover` a `bg` con grano al 4 %. Ninguna imagen (CA-01.4, regla 10).
+- Todo lo anterior cabe sin desplazar en una ventana de **360 × 640 px** (verificable en la spec con Playwright). Por debajo de 768 px el contenido se alinea arriba y el horizonte se reduce: en la portada de referencia el contenido quedaba abajo y el botón fuera de la primera pantalla (§14, corrección 1).
+- Desde 1024 px, panel de telemetría a la derecha: misiones publicadas, plazo de respuesta y hora de Lima. Fondo `surface` al 72 %, sin desenfoque.
+- Fondo, además del cielo global (§13): dos resplandores radiales (`surface-hover` y `fg-muted` al 14 %), un **horizonte planetario** (círculo de gran radio en la parte baja, con borde `fg` al 32 % y relleno radial de `surface-hover` a `bg`) y grano al 4 % como recurso estático. Ninguna imagen (CA-01.4, regla 10).
 
 ### 10.3 Vistas del listado de proyectos
 
@@ -443,6 +458,8 @@ Contrato para `src/styles/globals.css`. La spec de fundación lo copia tal cual.
   --color-warning: #e2bd4f;
   --color-danger: #f2666f;
   --color-overlay: rgb(11 13 18 / 0.8);
+  --color-star-cool: #c4d4ff;
+  --color-star-warm: #ffe0c8;
 
   --font-display: "Instrument Serif", Georgia, "Times New Roman", serif;
   --font-sans: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -520,3 +537,72 @@ La spec de fundación debe incluir:
 2. **Comprobación de literales**: busca en `src/components/` y `src/pages/` los patrones prohibidos de §12.2 y falla en la integración continua si encuentra alguno. Sin dependencia nueva.
 3. **Prueba del hero en 360 × 640**: el nombre, el enunciado y el acceso a WhatsApp son visibles sin desplazar (CA-01.1).
 4. **Presupuesto de fuentes**: como máximo 3 familias y 6 archivos servidos (CA-N01.5), dentro de la medición de rendimiento.
+
+## 13. Fondo estrellado
+
+Decidido el 2026-09-26 a partir de la portada de referencia (§14): el cielo es la firma visual del sitio y está fijo detrás de todas las páginas. Es **decorativo** (nunca transmite información), **procedural** (cero bytes de imagen) y **prescindible** (sin él, el sitio se entiende y se usa igual).
+
+### 13.1 Composición
+
+- Tres capas de profundidad:
+
+  | Capa | Proporción | Radio | Opacidad | Extra |
+  |---|---|---|---|---|
+  | Lejana | 62 % | 0,3–0,7 px | 0,22–0,52 | — |
+  | Media | 30 % | 0,55–1,1 px | 0,45–0,95 | — |
+  | Cercana | 8 % | 0,9–1,8 px | 0,45–0,95 | Halo tenue de 4 veces su radio al 10 % |
+
+- El 38 % de las estrellas se concentra en una banda diagonal que sugiere una vía láctea; el resto se reparte uniforme.
+- Color: `fg` en la mayoría, `star-cool` en el 12 % y `star-warm` en el 8 %.
+- Resplandores de fondo: dos gradientes radiales muy suaves, fijos, de `surface-hover` y `surface`.
+- Las secciones de lectura continua (servicios, cuerpo de los casos) van sobre una banda `bg-elevated` al 82 %, que atenúa el cielo detrás del texto.
+
+### 13.2 Rendimiento
+
+La portada de referencia redibuja unas 2.900 estrellas en cada fotograma. En un Android de gama media con la CPU limitada a un cuarto (regla 9), eso compromete la respuesta a interacciones. La implementación está **obligada** a:
+
+1. **Limitar el número**: una estrella por cada 1.100 px² de ventana aproximadamente, con **tope de 500 por debajo de 768 px y de 1.500 en escritorio**.
+2. **Pintar una sola vez lo que no cambia**: la capa lejana, que no parpadea, se dibuja en un lienzo fuera de pantalla y cada fotograma solo la copia desplazada. En cada fotograma solo se redibujan las capas media y cercana.
+3. **Arrancar después de la carga principal**, cuando el navegador está ocioso tras `load`. Nunca compite con el LCP ni con la primera interacción. Hasta entonces se ven `bg` y los resplandores CSS, sin salto visual.
+4. **Detenerse** cuando la pestaña no está visible.
+5. Limitar la densidad de píxeles a 2 y regenerar el cielo al redimensionar la ventana, con 200 ms de espera.
+6. **No usar desenfoque de fondo (`backdrop-filter`) sobre el cielo animado**: cada fotograma del lienzo obliga a recalcular el desenfoque de la cabecera y del panel. Se usan `overlay` o superficies semitransparentes.
+7. **Leer los colores de los tokens CSS** en tiempo de ejecución, nunca como literales en el script (regla 6).
+8. Tomar el presupuesto como árbitro: si con el cielo activo no se cumplen el tiempo de bloqueo ≤ 200 ms y la puntuación ≥ 95 (reglas 10 y 11), se reducen la densidad o los efectos hasta cumplirlos.
+
+### 13.3 Movimiento y accesibilidad
+
+- **Parpadeo**: opacidad sinusoidal en las capas media y cercana. **Estrellas fugaces**: una cada 6–15 s, con un trazo de 1,1 s. **Paralaje**: las capas se desplazan el 1,2 %, el 3 % y el 5,5 % del desplazamiento de la página, dentro del máximo del 8 % (§6).
+- **Con movimiento reducido**, el cielo se pinta una vez y queda quieto: sin parpadeo, sin estrellas fugaces y sin paralaje (§6).
+- Si el script falla o no hay JavaScript, se ven `bg` y los resplandores: el contenido no depende del cielo (CA-N05.3).
+- Las estrellas son puntos aislados de 2 px como máximo, sin áreas continuas: no forman una imagen bajo el texto y no exigen el velo de CA-N03.7. La prueba manual de contraste de la Fase 6 muestrea texto sobre las zonas más densas.
+- El lienzo lleva `aria-hidden="true"` y `pointer-events: none`.
+
+### 13.4 Dónde se implementa
+
+Spec 003 (estructura global), como isla propia en `src/scripts/`, cargada desde el layout en todas las páginas. El presupuesto de rendimiento se mide con el cielo activo: se mide el caso real, no uno aligerado.
+
+## 14. Portada de referencia
+
+`design/portada-universo/portada-universo.dc.html` (Claude Design, 2026-09-26) es la **referencia visual** de la cabecera, el hero, las vistas de proyectos, la franja de servicios, los resultados, el cierre de contacto, el pie de telemetría y la consola. Está construida sobre los tokens y componentes de este documento. Se abre en el navegador con `support.js` en la misma carpeta.
+
+**Decisiones tomadas al revisarla** (2026-09-26):
+
+- La automatización sustituye a la publicidad de pago como área de servicio (brief, CA-01.2).
+- El sitio mantiene páginas separadas. La portada toma este diseño como resumen y enlaza a proyectos, servicios, perfil y contacto. Se añade la sección del modelo de trabajo (CA-01.3), que la referencia no tiene. «Resultados» es una sección de la portada, no una entrada del menú: el menú sigue siendo PROYECTOS · SERVICIOS · PERFIL · CONTACTO (§9).
+- El fondo estrellado se adopta en todo el sitio (§13).
+
+**Correcciones obligatorias al implementarla.** Donde contradice los requisitos, la referencia no es un contrato:
+
+| # | En la referencia | Corrección | Requisito | Spec |
+|---|---|---|---|---|
+| 1 | A 360 × 640 px, el nombre y el botón de WhatsApp quedan fuera de la primera pantalla: el hero alinea el contenido abajo | Por debajo de 768 px el contenido se alinea arriba y el horizonte se reduce | CA-01.1 | 005 |
+| 2 | Por debajo de 1024 px la cabecera no tiene menú ni acceso a contacto | Botón de menú (`MobileNav`) y acceso a WhatsApp en la cabecera móvil | CA-N03.2, CA-08.4 | 003 |
+| 3 | `scroll-behavior: smooth` siempre activo | Solo con `prefers-reduced-motion: no-preference` | CA-N03.3 | 003 |
+| 4 | Desenfoque de fondo en la cabecera y en el panel del hero | `overlay` o superficie semitransparente, sin desenfoque | §13.2 | 003, 005 |
+| 5 | Grano generado con un lienzo en cada carga | Recurso estático (SVG o imagen diminuta) | Presupuesto | 005 |
+| 6 | El pie mide el tiempo hasta DOMContentLoaded y el de respuesta del servidor | Las tres métricas de RF-11: carga del contenido principal, respuesta a interacciones y estabilidad | RF-11 | 011 |
+| 7 | Misiones, métricas (+38 %, 1,1 s, 12 h), WhatsApp `51900000000` y correo son **datos de ejemplo inventados** | Todo sale de `content/`; nada de la referencia se publica | Regla 13, RF-05 | 002, 005 |
+| 8 | Consola hecha con un `div` con `role="dialog"` | `dialog` nativo con `showModal()` (§10.2) | RF-12 | 013 |
+| 9 | Titular «Diseño y construyo productos digitales que despegan y se quedan en órbita.» | Candidato a `profile.positioning`; lo decide Adrián (pista de contenido, 17 de octubre). No menciona medir ni crecer, que es el núcleo del posicionamiento | CA-01.1 | 005 |
+| 10 | Mapa con tres órbitas por área (web, e-commerce, automatización) | Órbitas por la `category` del modelo de datos | `modelo-datos.md` §3.1 | 014 |

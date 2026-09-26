@@ -37,3 +37,12 @@ Opción A, con tres condiciones que la hacen compatible con el presupuesto de re
 
 - Constitución: regla de un único módulo emisor de eventos y de consentimiento previo.
 - Política de privacidad: qué se mide, con qué finalidad y qué se guarda en el dispositivo.
+
+## Actualización del 2026-09-26
+
+La publicidad de pago deja de ser un área de servicio: la sustituye la automatización (ver brief). El contexto de este ADR decía que Adrián vendía analítica **y** publicidad. **La decisión se mantiene** por dos motivos:
+
+1. La analítica sigue siendo un área de servicio, y el sitio sigue siendo su demostración pública.
+2. La conversión importable a la plataforma de anuncios sigue siendo útil para los anuncios **propios** del sitio: el brief prevé invertir en ellos antes de crear las páginas individuales por servicio (v1.1).
+
+Lo que cambia es el peso del segundo argumento: pasa de oferta comercial a herramienta interna. Se revisa en la fecha ya prevista, a los tres meses del lanzamiento.

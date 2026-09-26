@@ -17,7 +17,8 @@
      que el idioma o el precio, y no una opción de implementación; y (b) los navegadores del
      visitante en CA-N05.1, porque son el entorno de ejecución, no una elección del sistema.
 
-     Revisado el 2026-09-17 con revisión adversarial de contexto fresco (32 hallazgos). -->
+     Revisado el 2026-09-17 con revisión adversarial de contexto fresco (32 hallazgos).
+     Cambio del 2026-09-26: en CA-01.2, la automatización sustituye a la publicidad de pago (decisión de negocio, ver brief). -->
 
 Capacidades del MVP (ver brief): **C1** propuesta de valor y servicios · **C2** casos verificables · **C3** contacto cualificado · **C4** credibilidad personal · **C5** medición propia.
 
@@ -29,7 +30,7 @@ Capacidades del MVP (ver brief): **C1** propuesta de valor y servicios · **C2**
 - Descripción: Como dueño de PYME que llega por primera vez, quiero entender de inmediato quién es Adrián, qué hace y cómo escribirle, para decidir en segundos si me sirve.
 - Criterios de aceptación:
   - CA-01.1 CUANDO un visitante abre la página principal EL SISTEMA DEBE mostrar, sin que el visitante desplace la página, el nombre público, una declaración de posicionamiento de 120 caracteres como máximo y **un acceso al canal de contacto principal definido en el brief (WhatsApp)**.
-  - CA-01.2 EL SISTEMA DEBE presentar las cinco áreas de trabajo (desarrollo web, comercio electrónico, posicionamiento en buscadores, publicidad de pago y analítica), cada una con una descripción de una frase y tres entregables.
+  - CA-01.2 EL SISTEMA DEBE presentar las cinco áreas de trabajo (desarrollo web, comercio electrónico, automatización, posicionamiento en buscadores y analítica), cada una con una descripción de una frase y tres entregables.
   - CA-01.3 EL SISTEMA DEBE presentar el modelo de trabajo en cuatro etapas (construir, medir, optimizar, crecer) indicando qué entrega cada etapa.
   - CA-01.4 EL SISTEMA DEBE mostrar el elemento principal de la página de inicio como texto, sin depender de ninguna imagen para transmitir el mensaje.
   - CA-01.5 EL SISTEMA DEBE mostrar en la página principal una selección de entre cinco y seis proyectos destacados, cada uno con acceso directo a su caso de estudio, más un acceso al listado completo.

@@ -1,7 +1,7 @@
 # Portafolio Adrián · The Universe + Mission Control
 
 ## Qué es
-Plataforma profesional personal de Adrián (desarrollo web, e-commerce, SEO, Google Ads, Analytics; Lima, Perú): portafolio evolutivo que presenta proyectos como "misiones", vende servicios a PYMES de Perú/LATAM y se mide a sí mismo (MISSION 000).
+Plataforma profesional personal de Adrián (desarrollo web, e-commerce, automatización, SEO, analítica; Lima, Perú): portafolio evolutivo que presenta proyectos como "misiones", vende servicios a PYMES de Perú/LATAM y se mide a sí mismo (MISSION 000).
 Brief: docs/01-contexto/brief.md · Requerimientos: docs/01-contexto/requerimientos.md
 Diseño (Fase 3): docs/03-diseno/sistema-diseno.md (tokens y componentes; dirección **híbrida** decidida) · modelo-datos.md (colecciones de contenido) · api.md (contrato de /api/contact)
 Origen (teoría previa al marco, en la raíz): plan_portfolio_universe_mission_control_v2.md · design_brief_claude_design.md · design/moodboards/.

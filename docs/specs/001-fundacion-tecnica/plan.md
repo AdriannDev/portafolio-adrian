@@ -85,7 +85,7 @@ Coherentes con la sección Comandos de `CLAUDE.md` (CA-1):
 
 ### Página provisional (CA-3, CA-4)
 
-- `BaseLayout` recibe `title` y `description`. Título: «Adrián Marchan · Sitio en construcción». Descripción: «Desarrollo web, e-commerce, SEO, Google Ads y analítica en Lima, Perú.»
+- `BaseLayout` recibe `title` y `description`. Título: «Adrián Marchan · Sitio en construcción». Descripción: «Desarrollo web, e-commerce, automatización, SEO y analítica en Lima, Perú.»
 - Contenido de `index.astro`:
   - etiqueta decorativa `SYSTEM ONLINE`, con `aria-hidden="true"`;
   - `h1` en display: «Construyo sistemas digitales que hacen *crecer* negocios.», con «crecer» en cursiva y `text-accent`;

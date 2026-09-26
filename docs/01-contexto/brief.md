@@ -7,13 +7,14 @@
 | Fecha | 2026-09-17 |
 | Tier | **2 · Producción** — lo usan clientes reales y potenciales; recoge datos personales por formulario (nombre, email, empresa); de él dependen leads del negocio. No es Tier 3: no procesa pagos ni datos sensibles. |
 | Tipo | web (sitio de contenido + formulario) |
-| Estado | Borrador → pendiente de Gate 1 |
+| Estado | Gate 1 superado (2026-09-17) |
+| Cambios | 2026-09-26: la automatización sustituye a la publicidad de pago como área de servicio, por decisión de negocio tomada al revisar el diseño de la portada |
 
 ## Problema
 
 Dos problemas conectados, uno propio y uno del mercado al que sirve.
 
-1. **Propio.** Adrián trabaja en cinco frentes (desarrollo web, e-commerce, SEO, Google Ads, analítica) y tiene proyectos publicados, pero no existe un lugar donde eso se pueda comprobar. Hoy los clientes llegan por referencia y cada conversación comercial empieza desde cero: explicando qué hace, sin casos a mano y sin pruebas de resultado. Ocurre **en cada conversación comercial**.
+1. **Propio.** Adrián trabaja en cinco frentes (desarrollo web, e-commerce, automatización, SEO, analítica) y tiene proyectos publicados, pero no existe un lugar donde eso se pueda comprobar. Hoy los clientes llegan por referencia y cada conversación comercial empieza desde cero: explicando qué hace, sin casos a mano y sin pruebas de resultado. Ocurre **en cada conversación comercial**.
 2. **Del cliente.** Las PYMES de Perú y LATAM contratan webs que se ven bien pero que nadie mide: no saben si venden, ni qué mejorar después del lanzamiento. Encargan una web y reciben un archivo, no un sistema que crezca.
 
 El portafolio resuelve el primero demostrando que el segundo se puede resolver.
@@ -54,7 +55,7 @@ Requisitos transversales al MVP (no cuentan como capacidad): página de error, p
 - **Versión en inglés / i18n**: el contenido será solo español (es-PE). No se prepara infraestructura de idiomas.
 - **3D y WebGL**: ningún elemento tridimensional. El mapa de proyectos es plano.
 - **Sonido**: ninguno, ni siquiera opcional.
-- **Landings individuales por servicio**: v1.1, cuando haya inversión en Ads que las justifique.
+- **Landings individuales por servicio**: v1.1, cuando haya inversión en anuncios propios que las justifique.
 - **Panel de administración o CMS externo**: el contenido lo edita su autor en archivos versionados.
 - **Blog** y **newsletter**: no en esta entrega.
 - **Cualquier dato de cliente sin permiso escrito**: el caso se publica sin nombrar al cliente, o no se publica.

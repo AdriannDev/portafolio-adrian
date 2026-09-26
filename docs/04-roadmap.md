@@ -8,7 +8,8 @@
 | Fecha | 2026-09-26 |
 | Iteraciones | 6, de 2 semanas; cierre en sábado |
 | Lanzamiento previsto | 2026-12-19 (cierre de la iteración 6) |
-| Primer recorte si hace falta | 014 y luego 013 (Should). Nunca un Must |
+| Primer recorte si hace falta | 014 y luego 013 (Should). Nunca un Must. El fondo estrellado está en la 003 (Must): no se recorta, se optimiza |
+| Referencia visual | Portada en `design/portada-universo/` y sus correcciones (`sistema-diseno.md` §14) |
 
 ## Cómo se ordenó
 
@@ -32,9 +33,9 @@
 
 | # | Feature | Prioridad | Spec | Cubre | Depende de | Estado |
 |---|---|---|---|---|---|---|
-| 3 | Estructura global: cabecera, pie, navegación, página de error, metadatos base, cabeceras de seguridad | Must | 003-estructura-global | CA-08.1, CA-08.3, CA-08.4, CA-13.1, CA-13.3, CA-N03.2, CA-N03.6, CA-N03.8, CA-N05.2; cabeceras de seguridad (política de contenido, `nosniff`, `Referrer-Policy`), propuestas en el plan de 001 | 1, 2 | pendiente |
+| 3 | Estructura global: cabecera, pie, navegación, fondo estrellado, página de error, metadatos base, cabeceras de seguridad | Must | 003-estructura-global | CA-08.1, CA-08.3, CA-08.4, CA-13.1, CA-13.3, CA-N03.2, CA-N03.6, CA-N03.8, CA-N05.2; fondo estrellado en todo el sitio (`sistema-diseno.md` §13); correcciones 2 a 4 de la portada de referencia (§14); cabeceras de seguridad (política de contenido, `nosniff`, `Referrer-Policy`), propuestas en el plan de 001 | 1, 2 | pendiente |
 | 4 | Consentimiento, medición y política de privacidad | Must | 004-consentimiento-medicion | RF-10, regla 20, ADR-011 | 3 | pendiente |
-| 5 | Portada | Must | 005-portada | RF-01 | 2, 3, 4 | pendiente |
+| 5 | Portada | Must | 005-portada | RF-01; secciones de la portada de referencia (`sistema-diseno.md` §14) más el modelo de trabajo (CA-01.3); correcciones 1, 5, 7 y 9 | 2, 3, 4 | pendiente |
 
 ## Iteración 3 · Casos verificables · cierre: 2026-11-07
 
@@ -133,3 +134,4 @@ Cada flujo de `usuarios.md` tiene página o endpoint y la spec que lo cierra de 
 | 2026-09-26 | Regla 19 de la constitución corregida con ADR-011 (almacenamiento funcional) | commit de la Fase 4 |
 | 2026-09-26 | `CLAUDE.md`: el repositorio remoto se crea en la It1; gotcha de `grep -c $'\r'` en Git Bash | commit de la Fase 4 |
 | 2026-09-26 | Borradas las specs de ejemplo del kit (`001-ejemplo-web-auth`, `002-ejemplo-pipeline-etl`): ocupaban la numeración real | commit de la Fase 4 |
+| 2026-09-26 | Portada de referencia incorporada: automatización en lugar de publicidad de pago, fondo estrellado global, correcciones en `sistema-diseno.md` §14 | commit de la portada de referencia |

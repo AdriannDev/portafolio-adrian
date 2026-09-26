@@ -44,7 +44,7 @@ Cabeceras obligatorias: `Content-Type: application/json` y `Origin` igual al ori
 | `name` | string | sí | Recortado; 1–200 caracteres; sin caracteres de control | CA-07.1, CA-N02.3 |
 | `email` | string | sí | Recortado; hasta 200; formato de correo; dominio en minúsculas | CA-07.1, CA-07.3 |
 | `company` | string | no | Recortado; hasta 200 | CA-07.1 |
-| `projectType` | enum | sí | `web` · `ecommerce` · `seo` · `ads` · `analytics` · `other` | CA-07.1 |
+| `projectType` | enum | sí | `web` · `ecommerce` · `automation` · `seo` · `analytics` · `other` | CA-07.1 |
 | `budget` | enum | no | Tramos orientativos más `undecided`; ver nota | CA-07.1 |
 | `message` | string | sí | Recortado; 1–5000 | CA-07.1, CA-N02.3 |
 | `consent` | literal `true` | sí | Cualquier otro valor es un error | CA-07.7 |
