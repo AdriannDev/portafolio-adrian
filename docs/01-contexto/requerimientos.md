@@ -255,27 +255,27 @@ Perfil de medición de referencia: dispositivo móvil de gama media con procesad
 
 | Requerimiento | Prioridad | Capacidad | Criterio de éxito | Spec que lo implementa | Estado |
 |---|---|---|---|---|---|
-| RF-01 | Must | C1 | E1, E2 | pendiente | pendiente |
-| RF-02 | Must | C1 | E1 | pendiente | pendiente |
-| RF-03 | Must | C2 | E2 | pendiente | pendiente |
-| RF-04 | Must | C2 | E2 | pendiente | pendiente |
-| RF-05 | Must | C2 | E5 | pendiente | pendiente |
-| RF-06 | Must | C2 | E5 | pendiente | pendiente |
-| RF-07 | Must | C3 | E1 | pendiente | pendiente |
-| RF-08 | Must | C3 | E1 | pendiente | pendiente |
-| RF-09 | Must | C4 | E1 | pendiente | pendiente |
-| RF-10 | Must | C5 | E1, E2 | pendiente | pendiente |
-| RF-11 | Must | C5 | — | pendiente | pendiente |
-| RF-12 | Should | transversal | E2 | pendiente | pendiente |
-| RF-13 | Must | transversal | — | pendiente | pendiente |
-| RF-14 | Could | C4 | — | pendiente | pendiente |
-| RNF-01 | Must | transversal | E3 | pendiente | pendiente |
-| RNF-02 | Must | transversal | — | pendiente | pendiente |
-| RNF-03 | Must | transversal | — | pendiente | pendiente |
-| RNF-04 | Must / Should | transversal | — | pendiente | pendiente |
-| RNF-05 | Must | transversal | E3 | pendiente | pendiente |
-| RNF-06 | Must | transversal | — | pendiente | pendiente |
-| RNF-07 | Must | transversal | E4 | pendiente | pendiente |
-| RNF-08 | Must | transversal | E1 | pendiente | pendiente |
+| RF-01 | Must | C1 | E1, E2 | 005 (acceso a WhatsApp de 003) | pendiente |
+| RF-02 | Must | C1 | E1 | 008 | pendiente |
+| RF-03 | Must | C2 | E2 | 006 (vista mapa: 014) | pendiente |
+| RF-04 | Must | C2 | E2 | 007 | pendiente |
+| RF-05 | Must | C2 | E5 | 002 (regla del dato), 007 (presentación) | pendiente |
+| RF-06 | Must | C2 | E5 | 007 (medición en producción: 015) | pendiente |
+| RF-07 | Must | C3 | E1 | 010 | pendiente |
+| RF-08 | Must | C3 | E1 | 003 (CA-08.1, .3, .4), 010 (CA-08.2, .5) | pendiente |
+| RF-09 | Must | C4 | E1 | 009 | pendiente |
+| RF-10 | Must | C5 | E1, E2 | 004 | pendiente |
+| RF-11 | Must | C5 | — | 011 | pendiente |
+| RF-12 | Should | transversal | E2 | 013 | pendiente |
+| RF-13 | Must | transversal | — | 003 (CA-13.2: 013) | pendiente |
+| RF-14 | Could | C4 | — | 009, si existe el documento | pendiente |
+| RNF-01 | Must | transversal | E3 | 001 (límites que bloquean); cada spec se mide contra ellos | pendiente |
+| RNF-02 | Must | transversal | — | 001 (CA-N02.1, .2), 010 (CA-N02.3 a .7) | pendiente |
+| RNF-03 | Must | transversal | — | Cada spec de página; 001 (contraste automático) | pendiente |
+| RNF-04 | Must / Should | transversal | — | 001 (CA-N04.1, .2, .3, .5), 015 (CA-N04.4) | pendiente |
+| RNF-05 | Must | transversal | E3 | Cada spec de página, verificado en QA | pendiente |
+| RNF-06 | Must | transversal | — | 001 (CA-N06.4), 002 (CA-N06.1 a .3), 007 (CA-N06.5) | pendiente |
+| RNF-07 | Must | transversal | E4 | 012 (metadatos base: 003; idioma: 001) | pendiente |
+| RNF-08 | Must | transversal | E1 | Cada spec de página; `sistema-diseno.md` §9 | pendiente |
 
 Nota sobre E3: el criterio se mide con **datos de campo**, que requieren un volumen mínimo de visitas reales. Hasta alcanzarlo se verifica con mediciones de laboratorio en el perfil de referencia de RNF-01. RF-11 muestra las métricas de la sesión de cada visitante, que es una demostración pública, no la fuente de medición de E3.

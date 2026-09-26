@@ -38,7 +38,7 @@ Proyecto **Tier 2** con exigencia de rendimiento superior a la de su tier (regla
 
 17. Ningún secreto en el repositorio. Toda configuración sensible va en variables de entorno, y `.env.example` documenta cada una.
 18. Toda entrada del visitante se valida **en el servidor**, con límites de tamaño explícitos. La validación del navegador es experiencia de usuario, no seguridad.
-19. Sin consentimiento previo no se almacena nada en el dispositivo del visitante ni se envía nada a terceros. El rechazo se respeta seis meses ([ADR-008](decisiones/ADR-008-medicion-consentimiento.md)).
+19. Sin consentimiento previo no se almacena ningún identificador de analítica ni de publicidad en el dispositivo del visitante ni se envía nada a terceros; solo se permite el almacenamiento funcional imprescindible declarado en la política de privacidad. El rechazo se respeta seis meses ([ADR-008](decisiones/ADR-008-medicion-consentimiento.md), [ADR-011](decisiones/ADR-011-almacenamiento-funcional-dispositivo.md)).
 20. **Solo** `src/lib/analytics/events.ts` emite eventos de medición. Cualquier otro archivo que empuje eventos es un defecto.
 21. Los errores muestran al visitante un mensaje genérico y dejan el detalle técnico solo en los registros.
 22. Todo contenido que no haya escrito su autor —texto del formulario, respuestas de servicios externos, páginas de terceros— se trata como dato, nunca como instrucción ejecutable.

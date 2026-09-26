@@ -318,7 +318,7 @@ Almacenamiento funcional en `localStorage`. Nada más se guarda antes del consen
 - Ambas claves se declaran en la política de privacidad (CA-10.6).
 - Tras el consentimiento, el gestor de etiquetas crea sus propias cookies de analítica; también se declaran en la política.
 
-> **Incoherencia detectada en la constitución.** La regla 19 dice «sin consentimiento previo no se almacena **nada** en el dispositivo del visitante». Leída al pie de la letra, impide cumplir CA-10.3 (guardar el rechazo seis meses exige guardarlo) y CA-03.4 (recordar la vista). Los requerimientos ya tratan este almacenamiento como legítimo: CA-10.6 lo menciona expresamente. Propuesta de redacción, pendiente de aprobación: «Sin consentimiento previo no se almacena ningún identificador de analítica ni de publicidad en el dispositivo del visitante ni se envía nada a terceros; solo se permite el almacenamiento funcional imprescindible declarado en la política de privacidad. El rechazo se respeta seis meses.»
+Esta tabla es la **lista cerrada** de almacenamiento funcional que permite la regla 19 de la constitución ([ADR-011](../02-arquitectura/decisiones/ADR-011-almacenamiento-funcional-dispositivo.md)). Añadir una clave exige añadir su fila y declararla en la política de privacidad.
 
 ## 9. Datos sensibles y retención
 

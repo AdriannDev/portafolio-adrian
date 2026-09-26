@@ -1,1 +1,1 @@
-000-plantilla — (sustituye esta línea por la carpeta de la spec en curso, p. ej. `001-auth`; el hook SessionStart la muestra al iniciar)
+001-fundacion-tecnica — spec aprobada (2026-09-26); siguiente paso: plan.md y tasks.md en plan mode

@@ -70,5 +70,6 @@ explorador (mapear código) · revisor-codigo (revisar diff vs spec) · revisor-
 <!-- Comportamientos no obvios del entorno: variables necesarias, puertos, servicios externos, cosas que Claude hizo mal más de una vez. -->
 - Entorno Windows 11 + Git Bash. Los hooks del kit corren con `python` (3.12.2 instalado).
 - Los archivos de texto van en UTF-8 sin BOM y con finales de línea LF (`.gitattributes` lo fuerza). Al escribir archivos con Python usa `newline="\n"`: en Windows convierte a CRLF por defecto.
-- Repositorio remoto en GitHub: **no existe todavía**. Necesario antes de la Fase 7 (ADR-007).
+- Para comprobar finales de línea usa `git ls-files --eol` o cuenta bytes con Python. En este Git Bash, `grep -c $'\r'` devuelve el número de líneas del archivo, no los CR: da falsos positivos de CRLF.
+- Repositorio remoto en GitHub: **no existe todavía**. Se crea privado en la iteración 1 (spec 001); lo crea Adrián.
 - La capa gratuita del servicio de correo tiene un tope de 100 envíos al día.
