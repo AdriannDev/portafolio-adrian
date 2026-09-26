@@ -22,7 +22,7 @@ Proyecto **Tier 2** con exigencia de rendimiento superior a la de su tier (regla
 
 ## Rendimiento
 
-9. **Perfil de medición de referencia**, fijado aquí para todo el proyecto: dispositivo móvil con el procesador limitado a la cuarta parte de su velocidad y red móvil rápida simulada. Toda cifra de rendimiento se mide en ese perfil, o no es comparable.
+9. **Perfil de medición de referencia**, fijado aquí para todo el proyecto: el perfil móvil por defecto de Lighthouse, el mismo que usa PageSpeed Insights. Es decir, emulación de dispositivo móvil, procesador limitado a la cuarta parte de su velocidad y red simulada de 150 ms de latencia y 1,6 Mbps de bajada. Toda cifra de rendimiento se mide en ese perfil, o no es comparable ([ADR-012](decisiones/ADR-012-herramientas-verificacion.md)).
 10. **Límites que bloquean la integración**: contenido principal cargado en 2,5 s o menos; respuesta a la interacción más lenta en 200 ms o menos; desplazamiento visual acumulado por debajo de 0,1; código de comportamiento de la portada por debajo de 180 kB y estilos por debajo de 40 kB, comprimidos con gzip; máximo tres familias tipográficas y seis archivos de fuente. El elemento principal de la portada es **texto**: ninguna imagen es necesaria para transmitir el mensaje.
 11. **Este proyecto exige más que su tier**: la puntuación de rendimiento y de accesibilidad en la medición automática debe ser **95 o más**, no el 80 que pide la Definition of Done de Tier 2. Razón: el sitio vende optimización de rendimiento; incumplirlo desmiente la oferta. Esta regla prevalece sobre la DoD genérica.
 12. Solo se animan `transform` y `opacity`. Ninguna animación bloquea la interacción.

@@ -23,7 +23,7 @@
 
 | # | Feature | Prioridad | Spec | Cubre | Depende de | Estado |
 |---|---|---|---|---|---|---|
-| 1 | Fundación técnica y verificación automática | Must | [001-fundacion-tecnica](specs/001-fundacion-tecnica/spec.md) | RNF-01 (límites), RNF-04, CA-N06.4, CA-N07.5, CA-N02.1, CA-N02.2, regla 24 | — | spec aprobada |
+| 1 | Fundación técnica y verificación automática | Must | [001-fundacion-tecnica](specs/001-fundacion-tecnica/spec.md) | RNF-01 (límites), RNF-04, CA-N06.4, CA-N07.5, CA-N02.1, CA-N02.2, regla 24 | — | plan aprobado; T1 hecha |
 | 2 | Modelo de contenido y reglas del dato | Must | 002-modelo-contenido | CA-N06.1, CA-N06.2, CA-05.2, CA-05.4, `modelo-datos.md` §3–§7 | 1 | pendiente |
 
 ## Iteración 2 · El flujo prioritario de Rosa · cierre: 2026-10-24
@@ -32,7 +32,7 @@
 
 | # | Feature | Prioridad | Spec | Cubre | Depende de | Estado |
 |---|---|---|---|---|---|---|
-| 3 | Estructura global: cabecera, pie, navegación, página de error, metadatos base | Must | 003-estructura-global | CA-08.1, CA-08.3, CA-08.4, CA-13.1, CA-13.3, CA-N03.2, CA-N03.6, CA-N03.8, CA-N05.2 | 1, 2 | pendiente |
+| 3 | Estructura global: cabecera, pie, navegación, página de error, metadatos base, cabeceras de seguridad | Must | 003-estructura-global | CA-08.1, CA-08.3, CA-08.4, CA-13.1, CA-13.3, CA-N03.2, CA-N03.6, CA-N03.8, CA-N05.2; cabeceras de seguridad (política de contenido, `nosniff`, `Referrer-Policy`), propuestas en el plan de 001 | 1, 2 | pendiente |
 | 4 | Consentimiento, medición y política de privacidad | Must | 004-consentimiento-medicion | RF-10, regla 20, ADR-011 | 3 | pendiente |
 | 5 | Portada | Must | 005-portada | RF-01 | 2, 3, 4 | pendiente |
 
@@ -72,7 +72,7 @@
 
 | # | Feature | Prioridad | Spec | Cubre | Depende de | Estado |
 |---|---|---|---|---|---|---|
-| 15 | Lanzamiento: dominio, comprobación de lanzamiento, monitorización, medición real de M-000 | Must (CA-N04.4: Should) | 015-lanzamiento | RL-1 a RL-5, CA-06.2, CA-N04.4, criterio E5 | todas | pendiente |
+| 15 | Lanzamiento: dominio, comprobación de lanzamiento, monitorización, medición real de M-000 | Must (CA-N04.4: Should) | 015-lanzamiento | RL-1 a RL-5, CA-06.2, CA-N04.4, criterio E5; redirección HTTPS explícita (CA-18 de 001) y retirada del `noindex` (CA-17 de 001) | todas | pendiente |
 
 La iteración 6 incluye además el cierre de calidad de Tier 2: informe del `qa-tester` con todos los criterios, revisión de seguridad y DoD firmada.
 

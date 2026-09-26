@@ -91,10 +91,12 @@ Que exista un sitio todavía vacío pero publicado, cuya calidad se verifica sol
 ## Riesgos y preguntas abiertas
 
 - [x] ¿Se crea ya el repositorio remoto? → Sí, privado, en esta iteración (decisión del 2026-09-26).
-- [ ] Formato, análisis estático y sus configuraciones figuran en `stack.md` sin ADR, y la regla 8 lo exige para toda dependencia nueva. → Dueño: plan.md. Se resuelve con un ADR antes de instalar, o justificando qué ADR existente las cubre.
-- [ ] Herramienta de medición de rendimiento, número de repeticiones y cómo se aplica el perfil de referencia → Dueño: plan.md, con la documentación vigente.
-- [ ] Mecanismo de carga de las fuentes (gestión nativa del framework o archivos propios) → Dueño: plan.md (sistema de diseño §3.1).
+- [x] Formato, análisis estático y sus configuraciones figuran en `stack.md` sin ADR, y la regla 8 lo exige para toda dependencia nueva. → Resuelto con ADR-012, que incluye el inventario de dependencias de esta spec.
+- [x] Herramienta de medición de rendimiento, número de repeticiones y cómo se aplica el perfil de referencia → Lighthouse CI con el perfil móvil por defecto (el de PageSpeed Insights, ahora con cifras en la regla 9); mediana de 3 ejecuciones; tamaños con gzip con un script propio (ADR-012).
+- [x] Mecanismo de carga de las fuentes → API de fuentes nativa de Astro, que descarga en el build y sirve desde el propio origen (plan.md).
 - [ ] Nombre del proyecto en la plataforma de alojamiento y dirección provisional → Adrián, al crear la cuenta.
+- [x] **Límite de CA-10 aceptado** (decisión del 2026-09-26): con un repositorio privado en la capa gratuita, la plataforma de código no permite proteger ramas. Una propuesta en rojo queda marcada pero no bloqueada. Queda garantizado lo esencial: nada con la verificación en rojo llega a producción (CA-15), y el hook local impide confirmar cambios con fallos (CA-12).
+- [x] **CA-18 se cumple en dos tiempos**: en la dirección provisional, el dominio de nivel superior `.dev` está en la lista de precarga HSTS de los navegadores, que nunca se conectan sin cifrar. La redirección explícita para clientes que no son navegadores solo puede activarse con el dominio propio, y se completa en la spec 015.
 - [ ] Las variables de configuración que aparezcan deben añadirse a `.env.example`. Las añade Adrián: la IA no edita archivos `.env*` (CLAUDE.md).
 
 ## Convergencia (se llena en Fase 6)

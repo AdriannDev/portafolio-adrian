@@ -35,9 +35,10 @@ Los dos criterios con peso 5 (rendimiento y costo) son los que decidieron el fra
 | Alojamiento | Cloudflare Workers con activos estáticos | 100.000 pet./día · activos ilimitados | Cloudflare Pages · alojamiento de pago | [ADR-007](decisiones/ADR-007-alojamiento-cloudflare-ci.md) |
 | Integración y publicación | GitHub Actions | — | Publicación manual | [ADR-007](decisiones/ADR-007-alojamiento-cloudflare-ci.md) |
 | Medición | Gestor de etiquetas + analítica de Google con consentimiento denegado por defecto | — | Analítica ligera sin cookies · sin medición | [ADR-008](decisiones/ADR-008-medicion-consentimiento.md) |
-| Pruebas | Vitest + Playwright + análisis de accesibilidad + presupuesto de rendimiento | — | Solo unitarias · solo navegador | [ADR-009](decisiones/ADR-009-pruebas-y-verificacion.md) |
-| Gestor de paquetes | pnpm (activado con corepack, ya disponible) | 10.x | npm 11.11 (instalado) · yarn · bun | — |
-| Formateador y análisis estático | Prettier + ESLint con la configuración de Astro | — | Biome | — |
+| Pruebas | Vitest + Playwright + axe (accesibilidad) + Lighthouse CI y script propio de tamaños (presupuesto de rendimiento) | — | Solo unitarias · solo navegador | [ADR-009](decisiones/ADR-009-pruebas-y-verificacion.md), [ADR-012](decisiones/ADR-012-herramientas-verificacion.md) |
+| Gestor de paquetes | pnpm | 12.4.2 | npm 11.11 (instalado) · yarn · bun | — |
+| Formateador y análisis estático | Prettier + ESLint con la configuración de Astro | — | Biome | [ADR-012](decisiones/ADR-012-herramientas-verificacion.md) |
+| Hook de confirmación | `core.hooksPath` nativo de git con `.githooks/pre-commit` | — | husky · lefthook · hook del kit | [ADR-012](decisiones/ADR-012-herramientas-verificacion.md) |
 
 **Coste de operación previsto**: solo el dominio. Las peticiones a activos estáticos no se cobran, el endpoint del formulario cabe holgadamente en la capa gratuita, y el servicio de correo, el verificador anti-automatización y la integración continua están en capa gratuita.
 
@@ -51,7 +52,7 @@ Decidido en [ADR-010](decisiones/ADR-010-stack-de-ia.md), con el principio de ne
 | Reglas por carpeta | No por ahora | Se añadirán si `CLAUDE.md` supera 150 líneas |
 | Subagentes | Los cinco del kit: explorador, revisor-codigo, revisor-seguridad, qa-tester, documentador | Tier 2 los exige |
 | Hooks activos | block-destructive, protect-files, format-file, session-start | Del kit, verificados en el Gate 0 |
-| Hook de pruebas previas a confirmar | Se activa al montar la fundación técnica | Necesita que exista el comando de pruebas |
+| Hook de pruebas previas a confirmar | Sustituido por el hook nativo de git ([ADR-012](decisiones/ADR-012-herramientas-verificacion.md)); `pre-commit-tests.py` del kit queda desactivado | El hook de git también cubre las confirmaciones de Claude; activar los dos duplicaría el trabajo |
 | Inteligencia de código | Complemento de TypeScript | Único lenguaje; permite a la IA ver errores de tipo tras cada edición |
 | Revisión de seguridad continua | Instalada | Tier 2 |
 | Servidores externos de contexto | Ninguno | Sin base de datos que consultar ni diseño en herramienta externa; las operaciones de repositorio se harán con la línea de comandos de GitHub |
@@ -71,4 +72,4 @@ Consultado el **2026-09-18**. Las versiones se revisan al inicio de cada iteraci
 | Cloudflare Workers | Capa gratuita: 100.000 peticiones al día, 10 ms de CPU por invocación, activos estáticos gratuitos e ilimitados, sin restricción de uso comercial. Paridad con Pages desde marzo de 2026 y vía recomendada para proyectos nuevos |
 | Resend | Capa gratuita: 3.000 correos al mes, tope de 100 al día, un dominio verificado |
 | Node.js | v24.14.1 instalada en la máquina de desarrollo |
-| Gestor de paquetes | npm 11.11.0 instalado; corepack 0.34.6 disponible para activar pnpm |
+| Gestor de paquetes | pnpm 12.4.2 activo (comprobado el 2026-09-26); npm 11.11.0 y corepack 0.34.6 también instalados |
