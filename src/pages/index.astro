@@ -6,8 +6,29 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   title="Adrián Marchan · Sitio en construcción"
   description="Desarrollo web, e-commerce, automatización, SEO y analítica en Lima, Perú."
 >
-  <main>
-    <h1>Adrián Marchan</h1>
-    <p>Sitio en construcción.</p>
+  {/* svh y no dvh: esa altura no cambia al ocultarse la barra del navegador móvil, así que el bloque centrado no se mueve */}
+  <main class="mx-auto flex min-h-svh max-w-page flex-col justify-center gap-8 px-gutter py-section">
+    <p aria-hidden="true" class="flex items-center gap-2 font-mono text-xs leading-normal font-medium tracking-label uppercase">
+      <span class="size-2 rounded-full bg-accent"></span>
+      SYSTEM ONLINE
+    </p>
+    <h1 class="max-w-4xl font-display text-6xl leading-display tracking-tight text-balance">
+      Construyo sistemas digitales que hacen <em class="text-accent italic">crecer</em> negocios.
+    </h1>
+    <div class="flex flex-wrap items-center gap-x-4 gap-y-3">
+      <p class="text-base font-medium">Adrián Marchan</p>
+      {/* En minúsculas en el HTML para que los lectores de pantalla lo lean como palabras; uppercase lo muestra en mayúsculas */}
+      <p class="flex items-center gap-2 rounded-sm border border-line-strong px-2 py-1 font-mono text-xs leading-normal font-medium tracking-label text-fg-muted uppercase">
+        <span class="size-2 rounded-full bg-warning"></span>
+        En construcción
+      </p>
+    </div>
+    <p class="max-w-prose text-lg leading-normal text-pretty text-fg-muted">
+      Desarrollo web, e-commerce, automatización, SEO y analítica en Lima, Perú. Mientras termino el sitio, puedes <a
+        href="https://wa.me/51937422519"
+        class="text-accent underline underline-offset-4 hover:decoration-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+        >escribirme por WhatsApp</a
+      >.
+    </p>
   </main>
 </BaseLayout>

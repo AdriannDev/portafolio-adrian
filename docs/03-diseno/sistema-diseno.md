@@ -11,7 +11,7 @@
 | Estado | Aprobado |
 | Dirección | **Híbrido**, elegido tras los moodboards (`design/moodboards/`, artboard 04) |
 | Referencia visual | Portada en `design/portada-universo/` (§14) |
-| Cambios | 2026-09-26: fondo estrellado en todo el sitio (§13), tokens de estrellas, horizonte del hero y correcciones a la portada de referencia (§14). 2026-09-27 (spec 001): fuentes con la API de Astro, reinicio de las sombras de texto, transición por defecto y escaneo de Tailwind limitado a `src/` (§3.1, §6, §12.1) |
+| Cambios | 2026-09-26: fondo estrellado en todo el sitio (§13), tokens de estrellas, horizonte del hero y correcciones a la portada de referencia (§14). 2026-09-27 (spec 001): fuentes con la API de Astro, reinicio de las sombras de texto, transición por defecto y escaneo de Tailwind limitado a `src/` (§3.1, §6, §12.1); etiqueta `EN CONSTRUCCIÓN` en el glosario (§9) |
 | Requisitos que sostiene | RNF-03 (accesibilidad), RNF-01 (fuentes y peso), RNF-08 (idioma de las etiquetas), CA-01.4, CA-N05.3 |
 | Reglas de la constitución | 6 (sin literales), 10 (texto como elemento principal), 12 (solo `transform` y `opacity`), 23–27 |
 
@@ -284,6 +284,7 @@ Glosario cerrado. Añadir un término exige añadir su fila:
 | `v1.4.2` | Identificador | Versión publicada (CA-11.3) |
 | `01 —` | Identificador | Numeración de secciones y de navegación |
 | `PUBLICADO` · `EN DESARROLLO` · `ARCHIVADO` | Informativa | Estado de un proyecto |
+| `EN CONSTRUCCIÓN` | Informativa | Estado del sitio en la página provisional, hasta el lanzamiento (spec 001; se retira en la 015) |
 | `CLIENTE CONFIDENCIAL` | Informativa | Caso sin autorización para nombrar al cliente (CA-04.6) |
 | `DISPONIBLE` · `AGENDA LIMITADA` · `SIN DISPONIBILIDAD` | Informativa | Disponibilidad (CA-09.3) |
 | `VERIFICADO` | Informativa | Métrica con evidencia (CA-05.3) |

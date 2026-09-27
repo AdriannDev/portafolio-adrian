@@ -1,0 +1,4 @@
+# Hasta el lanzamiento, ninguna publicación se indexa, previsualizaciones incluidas (CA-17).
+# La spec 015 retira esta regla al estrenar el dominio propio.
+/*
+  X-Robots-Tag: noindex
