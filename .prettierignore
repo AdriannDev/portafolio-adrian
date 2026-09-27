@@ -7,8 +7,10 @@ pnpm-lock.yaml
 # El contenido .mdx no queda excluido: lo decide la spec 002
 *.md
 
+# Anclados a la raíz con /: sin ella excluirían también cualquier carpeta design/ o .claude/ de src/ o content/
+
 # Prototipos de referencia exportados, no código del producto (también fuera de tsconfig.json y de ESLint)
-design/
+/design/
 
 # Kit de desarrollo con IA: sus archivos se mantienen como los entrega _framework/
-.claude/
+/.claude/

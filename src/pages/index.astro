@@ -8,7 +8,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 >
   {/* svh y no dvh: esa altura no cambia al ocultarse la barra del navegador móvil, así que el bloque centrado no se mueve */}
   <main class="mx-auto flex min-h-svh max-w-page flex-col justify-center gap-8 px-gutter py-section">
-    <p aria-hidden="true" class="flex items-center gap-2 font-mono text-xs leading-normal font-medium tracking-label uppercase">
+    <p
+      aria-hidden="true"
+      class="flex items-center gap-2 font-mono text-xs leading-normal font-medium tracking-label uppercase"
+    >
       <span class="size-2 rounded-full bg-accent"></span>
       SYSTEM ONLINE
     </p>
@@ -24,11 +27,14 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       </p>
     </div>
     <p class="max-w-prose text-lg leading-normal text-pretty text-fg-muted">
-      Desarrollo web, e-commerce, automatización, SEO y analítica en Lima, Perú. Mientras termino el sitio, puedes <a
+      Desarrollo web, e-commerce, automatización, SEO y analítica en Lima, Perú. Mientras termino el sitio, puedes{" "}
+      <a
         href="https://wa.me/51937422519"
         class="text-accent underline underline-offset-4 hover:decoration-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-        >escribirme por WhatsApp</a
-      >.
+      >
+        escribirme por WhatsApp
+      </a>
+      .
     </p>
   </main>
 </BaseLayout>
