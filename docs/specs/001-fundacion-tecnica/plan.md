@@ -39,8 +39,8 @@ GitHub Actions ejecuta las cinco y publica: una previsualización por propuesta 
 | `.gitignore` | modificar | Añadir `.astro/`, `.wrangler/`, `.lighthouseci/`, `test-results/`, `playwright-report/`, `coverage/` | T2 |
 | `src/styles/globals.css` | crear | Bloque de §12.1 íntegro; las familias apuntan a las variables de la API de fuentes | T3 |
 | `src/layouts/BaseLayout.astro` | crear | `<html lang="es-PE">`, `title`, `description`, `<Font>` (solo display con `preload`) | T3 |
-| `docs/03-diseno/sistema-diseno.md` | modificar | §12.1: líneas de familias según la API de fuentes (mismo commit que `globals.css`) | T3 |
-| `src/pages/index.astro` | crear | Página provisional | T2, T4 |
+| `docs/03-diseno/sistema-diseno.md` | modificar | §12.1: familias según la API de fuentes, reinicio de sombras de texto, transición por defecto y escaneo de `src/` (mismo commit que `globals.css`); §3.1 y §6 a juego | T3 |
+| `src/pages/index.astro` | crear | Página provisional; en T3 solo pasa a usar `BaseLayout` | T2, T3, T4 |
 | `public/_headers` | crear | `X-Robots-Tag: noindex` en `/*` | T4 |
 | `eslint.config.js` · `.prettierrc.json` · `.prettierignore` | crear | Análisis estático y formato | T5 |
 | `.claude/hooks/hooks.config.json` | modificar | Formateadores para `.astro`, `.mjs`, `.jsonc` y `.yml`; `pre_commit_test_command` sigue vacío | T5 |
@@ -78,7 +78,7 @@ Coherentes con la sección Comandos de `CLAUDE.md` (CA-1):
 
 ### Tokens y fuentes (CA-5, CA-6, CA-9)
 
-- `globals.css` contiene, en este orden: `@import "tailwindcss";`, el bloque `@theme` de §12.1 con los reinicios (`--color-*: initial;` y el resto), el bloque `:root` de duraciones y capas, y la consulta `@media (prefers-reduced-motion: reduce)`. Se copia literalmente del documento, salvo las familias.
+- `globals.css` contiene, en este orden: `@import "tailwindcss" source("..");` (escaneo solo de `src/`), el bloque `@theme` de §12.1 con los diez reinicios (`--color-*: initial;`, `--text-shadow-*: initial;` y el resto), un bloque `@theme inline` con las familias y la transición por defecto de `transition-*` (`--duration-micro` y `--ease-in-out`), el bloque `:root` de duraciones y capas, y la consulta `@media (prefers-reduced-motion: reduce)`. Es copia literal de §12.1, que T3 actualizó con estos cambios.
 - Fuentes en `astro.config.mjs` con `fontProviders.fontsource()` y `subsets: ["latin"]`: Instrument Serif (peso 400, estilos normal y cursiva), Geist (variable, 300–700) y Geist Mono (variable, 400–500). Cada familia recibe su propia variable CSS de Astro; en `globals.css`, `--font-display`, `--font-sans` y `--font-mono` apuntan a ellas dentro de `@theme inline`. Así, el nombre del token no cambia y las utilidades usan el valor resuelto con su respaldo ajustado. §12.1 se actualiza en el mismo commit.
 - En `BaseLayout.astro`, `<Font>` de las tres familias en el `<head>`, y **solo la display con `preload`**: el `h1` provisional está en display y será el elemento principal de carga.
 - Límite de 6 archivos de fuente: lo verifica la prueba de navegador (T8). Si el proveedor genera un archivo por peso en vez de uno variable, se ajustan los pesos declarados hasta cumplirlo, sin cambiar las familias.
@@ -110,8 +110,8 @@ Coherentes con la sección Comandos de `CLAUDE.md` (CA-1):
 
 `tests/unit/design-tokens.test.ts` lee `docs/03-diseno/sistema-diseno.md` y `src/styles/globals.css`:
 
-1. Extrae el primer bloque ```` ```css ```` de §12.1 y comprueba que **cada** variable declarada allí existe en `globals.css` con el mismo valor. Las familias se comparan por el nombre de la familia principal.
-2. Comprueba que están los nueve reinicios (`--color-*: initial`, etc.).
+1. Extrae el primer bloque ```` ```css ```` de §12.1 y comprueba que **cada** variable declarada allí existe en `globals.css` con el mismo valor. Las familias y la transición por defecto, en `@theme inline`, se comparan igual que el resto: desde T3, §12.1 y `globals.css` son idénticos.
+2. Comprueba que están los diez reinicios (`--color-*: initial`, `--text-shadow-*: initial`, etc.).
 3. Recalcula la matriz de §2.2 con la fórmula de WCAG 2.x:
    - texto (`fg`, `fg-muted`, `fg-subtle`, `accent`, `success`, `warning`, `danger`) ≥ 4,5 sobre `bg`, `bg-elevated`, `surface` y `surface-hover`;
    - `line-control` y `accent` ≥ 3 sobre los mismos fondos;
@@ -143,7 +143,7 @@ Coherentes con la sección Comandos de `CLAUDE.md` (CA-1):
 
 - `html[lang="es-PE"]`, `<title>` y `<meta name="description">` no vacíos.
 - Registro de todas las peticiones: todas del propio origen; como máximo 6 de fuentes; como máximo 3 valores distintos de `font-family` resueltos por los elementos visibles.
-- Con `page.emulateMedia({ reducedMotion: 'reduce' })`, `getComputedStyle(document.documentElement).getPropertyValue('--duration-section')` vale `0ms`.
+- Con `page.emulateMedia({ reducedMotion: 'reduce' })`, `getComputedStyle(document.documentElement).getPropertyValue('--duration-section')` vale cero. El minificador reescribe las duraciones en segundos (`0s`, `.48s`; comprobado en T3), así que se compara el valor numérico, no el texto `0ms`.
 - `@axe-core/playwright` sin violaciones de impacto `serious` ni `critical`.
 - Ningún CSS de `dist/` contiene variables de la paleta por defecto (`--color-red-`, `--color-blue-`, `--shadow-`…).
 

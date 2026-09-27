@@ -11,7 +11,7 @@
 | Estado | Aprobado |
 | Dirección | **Híbrido**, elegido tras los moodboards (`design/moodboards/`, artboard 04) |
 | Referencia visual | Portada en `design/portada-universo/` (§14) |
-| Cambios | 2026-09-26: fondo estrellado en todo el sitio (§13), tokens de estrellas, horizonte del hero y correcciones a la portada de referencia (§14) |
+| Cambios | 2026-09-26: fondo estrellado en todo el sitio (§13), tokens de estrellas, horizonte del hero y correcciones a la portada de referencia (§14). 2026-09-27 (spec 001): fuentes con la API de Astro, reinicio de las sombras de texto, transición por defecto y escaneo de Tailwind limitado a `src/` (§3.1, §6, §12.1) |
 | Requisitos que sostiene | RNF-03 (accesibilidad), RNF-01 (fuentes y peso), RNF-08 (idioma de las etiquetas), CA-01.4, CA-N05.3 |
 | Reglas de la constitución | 6 (sin literales), 10 (texto como elemento principal), 12 (solo `transform` y `opacity`), 23–27 |
 
@@ -108,14 +108,14 @@ Consecuencia práctica: **cualquier token de texto es legible sobre cualquier fo
 | `--font-sans` | Geist | 1: variable 300–700 | Cuerpo, interfaz, botones, `h3` |
 | `--font-mono` | Geist Mono | 1: variable 400–500 | Etiquetas, identificadores, datos |
 
-Total: **3 familias y 4 archivos** (límite: 3 y 6, CA-N01.5). Licencia SIL OFL. Pendiente de concretar en la spec: los archivos definitivos y el mecanismo de carga (gestión nativa de fuentes de Astro o archivos en `public/fonts/`).
+Total: **3 familias y 4 archivos** (límite: 3 y 6, CA-N01.5). Licencia SIL OFL. Mecanismo de carga (spec 001): la API de fuentes de Astro, con el proveedor Fontsource, descarga en el build los archivos WOFF2 del subconjunto latino y los sirve desde el propio origen. Las familias, sus pesos, estilos y respaldo se declaran en `astro.config.mjs` (`fonts`); cada una expone una variable CSS, a la que apunta su token (§12.1).
 
 Condiciones de carga:
 
 - **Autoalojadas**, nunca desde un servicio de fuentes de terceros: pedirlas a un tercero enviaría la dirección IP del visitante antes de su consentimiento (CA-10.1).
 - Solo se precarga la serif regular: el `h1` de la portada es el elemento principal de carga (LCP) y está escrito en ella.
 - `font-display: swap` con fuentes de respaldo ajustadas en métrica (`size-adjust`), para que el cambio de fuente no desplace la maquetación (CA-N01.3).
-- Respaldo: serif → Georgia, "Times New Roman"; sans → system-ui, "Segoe UI"; mono → ui-monospace, Consolas.
+- Respaldo: serif → Georgia, "Times New Roman"; sans → system-ui, -apple-system, "Segoe UI"; mono → ui-monospace, "SF Mono", Consolas. Delante de cada lista, Astro añade una fuente local ajustada en métrica a la web: Times New Roman, Arial y Courier New, respectivamente.
 - El subconjunto latino cubre el español (á é í ó ú ü ñ ¿ ¡ « » —). Los glifos fuera de él (⌘ → ✓ ↗) **nunca se escriben como texto**: son iconos SVG (§8). En sistemas que no son de Apple, el atajo de la consola se muestra como texto «Ctrl K».
 
 ### 3.2 Escala fluida
@@ -208,6 +208,8 @@ Sin sombras: Tailwind arranca sin ellas (`--shadow-*: initial`). Sobre fondo osc
 | `--duration-cinematic` | `900ms` | Secuencia del hero (duración total) |
 | `--ease-out-expo` | `cubic-bezier(0.16, 1, 0.3, 1)` | Entradas |
 | `--ease-in-out` | `cubic-bezier(0.65, 0, 0.35, 1)` | Transiciones de estado |
+
+Sin clases propias de duración ni de curva, las utilidades `transition-*` usan `--duration-micro` y `--ease-in-out`, los valores de hover y foco (§12.1). En el build de producción, el minificador reescribe las duraciones en segundos (`.48s`, `0s`): un script que las lea en tiempo de ejecución debe aceptar `ms` y `s`.
 
 Reglas:
 
@@ -427,13 +429,15 @@ Si el visitante eligió la vista mapa y la ventana baja de 1024 px, se muestra l
 Contrato para `src/styles/globals.css`. La spec de fundación lo copia tal cual.
 
 ```css
-@import "tailwindcss";
+/* Escaneo solo de src/: docs/ y design/ contienen clases de ejemplo (bg-[#fff]) que acabarían en el CSS publicado */
+@import "tailwindcss" source("..");
 
 @theme {
   /* Sin valores por defecto: en el código solo existen los tokens del proyecto (regla 6) */
   --color-*: initial;
   --font-*: initial;
   --text-*: initial;
+  --text-shadow-*: initial; /* el reinicio de --text-* no alcanza a las sombras de texto */
   --radius-*: initial;
   --shadow-*: initial;
   --inset-shadow-*: initial;
@@ -460,10 +464,6 @@ Contrato para `src/styles/globals.css`. La spec de fundación lo copia tal cual.
   --color-overlay: rgb(11 13 18 / 0.8);
   --color-star-cool: #c4d4ff;
   --color-star-warm: #ffe0c8;
-
-  --font-display: "Instrument Serif", Georgia, "Times New Roman", serif;
-  --font-sans: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono: "Geist Mono", ui-monospace, "SF Mono", Consolas, monospace;
 
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;
@@ -495,6 +495,18 @@ Contrato para `src/styles/globals.css`. La spec de fundación lo copia tal cual.
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* Tokens que apuntan a otras variables; inline hace que las utilidades usen esa referencia directamente */
+@theme inline {
+  /* Las familias las declara la API de fuentes de Astro (astro.config.mjs), con su respaldo ajustado en métrica */
+  --font-display: var(--font-instrument-serif);
+  --font-sans: var(--font-geist);
+  --font-mono: var(--font-geist-mono);
+
+  /* Transición de las utilidades transition-* sin duración ni curva propias: la de hover y foco (§6) */
+  --default-transition-duration: var(--duration-micro);
+  --default-transition-timing-function: var(--ease-in-out);
 }
 
 /* Tokens sin espacio de nombres en Tailwind: se usan con la sintaxis de variable, p. ej. z-(--z-header) */

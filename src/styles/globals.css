@@ -1,0 +1,103 @@
+/* Escaneo solo de src/: docs/ y design/ contienen clases de ejemplo (bg-[#fff]) que acabarían en el CSS publicado */
+@import "tailwindcss" source("..");
+
+@theme {
+  /* Sin valores por defecto: en el código solo existen los tokens del proyecto (regla 6) */
+  --color-*: initial;
+  --font-*: initial;
+  --text-*: initial;
+  --text-shadow-*: initial; /* el reinicio de --text-* no alcanza a las sombras de texto */
+  --radius-*: initial;
+  --shadow-*: initial;
+  --inset-shadow-*: initial;
+  --drop-shadow-*: initial;
+  --ease-*: initial;
+  --animate-*: initial;
+
+  --color-bg: #0b0d12;
+  --color-bg-elevated: #10131a;
+  --color-surface: #151923;
+  --color-surface-hover: #1b2030;
+  --color-fg: #f2efe8;
+  --color-fg-muted: #a9abb3;
+  --color-fg-subtle: #8a8e99;
+  --color-line: #23272f;
+  --color-line-strong: #363b47;
+  --color-line-control: #6a707c;
+  --color-accent: #ff5a1f;
+  --color-accent-hover: #ff7a45;
+  --color-accent-fg: #0b0d12;
+  --color-success: #6fb583;
+  --color-warning: #e2bd4f;
+  --color-danger: #f2666f;
+  --color-overlay: rgb(11 13 18 / 0.8);
+  --color-star-cool: #c4d4ff;
+  --color-star-warm: #ffe0c8;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: clamp(1rem, 0.9792rem + 0.0926vw, 1.0625rem);
+  --text-lg: clamp(1.125rem, 1.0833rem + 0.1852vw, 1.25rem);
+  --text-xl: clamp(1.25rem, 1.1667rem + 0.3704vw, 1.5rem);
+  --text-2xl: clamp(1.5rem, 1.375rem + 0.5556vw, 1.875rem);
+  --text-3xl: clamp(1.75rem, 1.5rem + 1.1111vw, 2.5rem);
+  --text-4xl: clamp(2rem, 1.5833rem + 1.8519vw, 3.25rem);
+  --text-5xl: clamp(2.25rem, 1.6667rem + 2.5926vw, 4rem);
+  --text-6xl: clamp(2.5rem, 1.5833rem + 4.0741vw, 5.25rem);
+
+  --leading-display: 1;
+  --leading-tight: 1.1;
+  --leading-snug: 1.3;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.65;
+
+  --tracking-tight: -0.01em;
+  --tracking-data: 0.02em;
+  --tracking-label: 0.14em;
+
+  --spacing-gutter: clamp(1.25rem, 0.1667rem + 4.8148vw, 4.5rem);
+  --spacing-section: clamp(4rem, 2.6667rem + 5.9259vw, 8rem);
+  --container-page: 90rem;
+
+  --radius-sm: 2px;
+  --radius-md: 4px;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* Tokens que apuntan a otras variables; inline hace que las utilidades usen esa referencia directamente */
+@theme inline {
+  /* Las familias las declara la API de fuentes de Astro (astro.config.mjs), con su respaldo ajustado en métrica */
+  --font-display: var(--font-instrument-serif);
+  --font-sans: var(--font-geist);
+  --font-mono: var(--font-geist-mono);
+
+  /* Transición de las utilidades transition-* sin duración ni curva propias: la de hover y foco (§6) */
+  --default-transition-duration: var(--duration-micro);
+  --default-transition-timing-function: var(--ease-in-out);
+}
+
+/* Tokens sin espacio de nombres en Tailwind: se usan con la sintaxis de variable, p. ej. z-(--z-header) */
+:root {
+  --duration-micro: 120ms;
+  --duration-ui: 240ms;
+  --duration-section: 480ms;
+  --duration-cinematic: 900ms;
+
+  --z-base: 0;
+  --z-raised: 1;
+  --z-sticky: 100;
+  --z-header: 200;
+  --z-banner: 300;
+  --z-overlay: 400;
+  --z-console: 500;
+  --z-toast: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-section: 0ms;
+    --duration-cinematic: 0ms;
+  }
+}

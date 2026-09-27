@@ -1,0 +1,28 @@
+---
+import { Font } from "astro:assets";
+import "../styles/globals.css";
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es-PE">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {/* Solo se precarga la serif regular: el h1 está escrito en ella y es el elemento principal de carga (§3.1) */}
+    <Font cssVariable="--font-instrument-serif" preload={[{ weight: 400, style: "normal" }]} />
+    <Font cssVariable="--font-geist" />
+    <Font cssVariable="--font-geist-mono" />
+  </head>
+  <body class="bg-bg text-fg">
+    <slot />
+  </body>
+</html>
