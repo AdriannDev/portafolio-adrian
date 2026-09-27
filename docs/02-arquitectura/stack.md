@@ -26,7 +26,7 @@ Los dos criterios con peso 5 (rendimiento y costo) son los que decidieron el fra
 |---|---|---|---|---|
 | Arquitectura | Generación en build + un endpoint de servidor | — | Renderizado por petición · aplicación de una sola página | [ADR-001](decisiones/ADR-001-arquitectura-sitio-estatico.md) |
 | Framework | Astro | 7.3.1 (2026-09-03) | Next.js 16.2.10 · prueba comparativa | [ADR-002](decisiones/ADR-002-framework-astro.md) |
-| Lenguaje | TypeScript en modo estricto | 5.x | — | [ADR-002](decisiones/ADR-002-framework-astro.md) |
+| Lenguaje | TypeScript en modo estricto | 6.0.3 (la mayor que admite `@astrojs/check`; 7.x aún no) | — | [ADR-002](decisiones/ADR-002-framework-astro.md) |
 | Estilos y tokens | Tailwind CSS v4 con `@theme` | 4.3.2 (2026-06-29) | CSS propio con variables · estilos en JavaScript | [ADR-003](decisiones/ADR-003-estilos-tailwind.md) |
 | Contenido | Content Collections nativas + MDX + esquemas Zod | nativo de Astro | Gestor externo · JSON sin validar | [ADR-004](decisiones/ADR-004-contenido-collections-mdx.md) |
 | Interactividad | TypeScript sobre el DOM, sin framework de interfaz | — | Islas React · islas Svelte | [ADR-005](decisiones/ADR-005-interactividad-islas-gsap.md) |

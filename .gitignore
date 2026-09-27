@@ -19,6 +19,14 @@ build/
 __pycache__/
 *.pyc
 
+# Astro, pruebas y medición
+.astro/
+.wrangler/
+.lighthouseci/
+test-results/
+playwright-report/
+coverage/
+
 # Sistema
 .DS_Store
 Thumbs.db
