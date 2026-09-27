@@ -10,6 +10,10 @@
     ".jsx": "npx --no-install prettier --write {file}",
     ".json": "npx --no-install prettier --write {file}",
     ".css": "npx --no-install prettier --write {file}",
+    ".astro": "npx --no-install prettier --write {file}",
+    ".mjs": "npx --no-install prettier --write {file}",
+    ".jsonc": "npx --no-install prettier --write {file}",
+    ".yml": "npx --no-install prettier --write {file}",
     ".go": "gofmt -w {file}",
     ".rs": "rustfmt {file}"
   },

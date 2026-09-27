@@ -1,0 +1,14 @@
+# Se suma a .gitignore, que Prettier 3 ya lee (dist/, .astro/, node_modules/…)
+
+# Lo genera pnpm
+pnpm-lock.yaml
+
+# Documentación en prosa: el hook de formato del kit no la toca y Prettier reescribiría sus tablas y énfasis.
+# El contenido .mdx no queda excluido: lo decide la spec 002
+*.md
+
+# Prototipos de referencia exportados, no código del producto (también fuera de tsconfig.json y de ESLint)
+design/
+
+# Kit de desarrollo con IA: sus archivos se mantienen como los entrega _framework/
+.claude/
