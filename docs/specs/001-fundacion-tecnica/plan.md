@@ -55,7 +55,7 @@ GitHub Actions ejecuta las cinco y publica: una previsualización por propuesta 
 | `wrangler.jsonc` | crear | Configuración del Worker de activos | T11 |
 | `.github/workflows/ci.yml` | crear | `verify` → `deploy-preview` · `deploy-production` | T11, T12 |
 | `README.md` | reescribir | Del README del kit al del proyecto | T13 |
-| `CLAUDE.md` | modificar | Comandos reales y vuelta atrás | T13 |
+| `CLAUDE.md` | modificar | Filtro de `pnpm test` sin `--` (T6); comandos reales y vuelta atrás (T13) | T6, T13 |
 
 ## Diseño técnico
 
@@ -68,7 +68,7 @@ Coherentes con la sección Comandos de `CLAUDE.md` (CA-1):
 | `dev` · `build` · `preview` | `astro dev` · `astro build` · `astro preview` |
 | `check` | `astro check && eslint . && prettier --check . && node scripts/check-literals.mjs` |
 | `format` | `prettier --write .` |
-| `test` | `vitest run`; se filtra con `pnpm test -- <patrón>` |
+| `test` | `vitest run`; se filtra con `pnpm test <patrón>`, sin `--`: pnpm 12 reenvía el `--` al script, y Vitest no toma como filtro lo que va detrás (comprobado en T6) |
 | `test:e2e` | `playwright test` (necesita `dist/`; lo sirve `astro preview`) |
 | `test:all` | `vitest run && pnpm build && playwright test` |
 | `perf` | `pnpm build && pnpm perf:measure` |
@@ -96,15 +96,37 @@ Coherentes con la sección Comandos de `CLAUDE.md` (CA-1):
 
 ### Comprobación de literales (CA-7)
 
-`scripts/lib/find-literals.mjs` exporta una función pura `findLiterals(filePath, content) → [{ line, match, rule }]`. `scripts/check-literals.mjs` recorre `src/components`, `src/pages` y `src/layouts` (`.astro`, `.ts`, `.tsx`, `.mjs`), imprime `archivo:línea: regla — fragmento` y sale con código 1 si hay alguno. Reglas:
+`scripts/lib/find-literals.mjs` exporta una función pura `findLiterals(content) → [{ line, match, rule }]`; la ruta la añade el ejecutable al imprimir. `scripts/check-literals.mjs` recorre `src/components`, `src/pages` y `src/layouts` (`.astro`, `.ts`, `.tsx`, `.js`, `.jsx`, `.mjs`, y las otras formas de página de Astro: `.md`, `.mdx`, `.html`), imprime `archivo:línea: regla — fragmento` y sale con código 1 si hay alguno. También sale con código 1 si no hay ninguna página en `src/pages`: si se mueven las carpetas, no debe pasar en verde habiendo revisado menos de lo que cree. Un literal contenido en otro ya señalado no se repite: `bg-[#fff]` da un solo hallazgo. Las expresiones llevan cuantificadores acotados, porque una línea larga sin espacios tardaría un tiempo cuadrático.
 
-| Regla | Patrón | Ejemplo prohibido | Ejemplo permitido |
-|---|---|---|---|
-| `arbitrary-value` | Clase de Tailwind con corchetes `-[…]` | `bg-[#fff]`, `p-[13px]` | `p-4`, `duration-(--duration-ui)` |
-| `hex-color` | `#` seguido de 3, 4, 6 u 8 dígitos hexadecimales dentro de `class` o `style` | `style="color:#fff"` | `href="#contacto"` |
-| `color-function` | `rgb(`, `rgba(`, `hsl(`, `hsla(`, `oklch(`, `oklab(`, `lab(`, `lch(` | `style="color: rgb(0 0 0)"` | — |
-| `numeric-utility` | `duration-N`, `delay-N`, `z-N` con número | `duration-300`, `z-50` | `z-(--z-header)` |
-| `inline-length` | Longitud literal (`px`, `rem`, `em`, `ms`, `s`) dentro de `style=""` | `style="margin: 12px"` | — |
+Los **contextos CSS** son:
+- el atributo `style`, entre comillas o como expresión `style={…}`, y su forma `el.style.width = …`;
+- `define:vars={…}` de `<style>`;
+- los atributos de presentación de SVG de color (`fill`, `stroke`, `color`, `stop-color`, `flood-color`, `lighting-color`) y de tamaño (`font-size`, `letter-spacing`, `word-spacing`, `stroke-width`, `rx`, `ry`);
+- el contenido de los elementos `<style>`, sin contar `<style-guide>` ni un `<style … />` autocerrado.
+
+Una asignación de TypeScript con esos nombres (`const color = "white"`) cuenta igual. Los comentarios `/* … */` no son CSS: «tan» o «red» son palabras corrientes en español. Reglas (ajustadas en T6 para cubrir CA-7 entero):
+
+| Regla | Dónde | Patrón | Ejemplo prohibido | Ejemplo permitido |
+|---|---|---|---|---|
+| `arbitrary-value` | Todo el archivo | Clase de Tailwind con valor o modificador entre corchetes (`-[…]`, `/[…]`), variantes con corchetes incluidas (`max-[…]:`, `@[…]:`, `[@media…]:`), y propiedad arbitraria `[propiedad:valor]` | `bg-[#fff]`, `p-[13px]`, `text-sm/[18px]`, `max-[600px]:hidden`, `[margin:12px]` | `p-4`, `text-sm/7`, `duration-(--duration-ui)`, `"/misiones/[slug]"`, `[key: string]` |
+| `hex-color` | Todo el archivo | `#` seguido de 3, 4, 6 u 8 dígitos hexadecimales; no cuentan `href="#…"` ni `{ href: "#…" }`, `url(#…)`, las entidades `&#…;`, los fragmentos de URL ni los campos privados (`this.#add`) | `style="color:#fff"`, `fill="#25D366"`, `color="#fff"` | `href="#contacto"`, `href="#cafe"` |
+| `color-function` | Todo el archivo | `rgb(`, `rgba(`, `hsl(`, `hsla(`, `oklch(`, `oklab(`, `lab(`, `lch(` | `style="color: rgb(0 0 0)"` | — |
+| `numeric-utility` | Todo el archivo | `duration-N`, `delay-N`, `z-N` con número | `duration-300`, `z-50`, `-z-10` | `z-(--z-header)` |
+| `inline-length` | Contextos CSS | Número distinto de cero con unidad de longitud o de tiempo: `px`, `rem`, `em`, `ms` y `s`, y el resto de unidades de longitud (`vh`, `svh`, `vw`, `ch`, `rch`, `ic`, `pt`…). Sin `%`, que marcaría los pasos de `@keyframes` | `style="margin: 12px"`, `min-height: 100svh` en `<style>`, `font-size="11px"` | `margin: 0`, `transition-delay: 0s`, `` style={`left: ${x}px`} `` |
+| `named-color` | Contextos CSS | Las 148 palabras clave de color de CSS | `style="color: white"`, `fill="red"` | `currentColor`, `transparent`, `white-space` |
+
+Una variante o una utilidad propias que necesiten corchetes se declaran con `@custom-variant` o `@utility` en `globals.css`, y en §12.1 del sistema de diseño en el mismo commit, porque `globals.css` es su copia literal. Ejemplos: `aria-[current=page]:`, `transition-[opacity,transform]` (la forma natural de cumplir la regla 12) o `grid-cols-[auto_1fr]`.
+
+**Límites conocidos**: quedan para la revisión de código, y la regla 6 se aplica igual:
+- los números sin unidad (`z-index: 50`, `line-height: 1.2`, `font-weight: 500`);
+- los nombres de familias tipográficas;
+- las funciones `color()` y `hwb()`;
+- los valores que el detector no reconoce como CSS por su nombre: `const cardStyle = { padding: "12px" }`, `ctx.font = "12px …"`, `style.setProperty(…)`;
+- los literales fuera de las tres carpetas (`src/scripts/`, `src/lib/`).
+
+Falsos positivos conocidos, que se evitan redactando de otra forma: `#123` en un comentario, `querySelector("#add")` y `data-target="#add"`.
+
+Lo que la plataforma obliga a escribir como literal falla: el blanco y negro de una máscara SVG, o un `<meta name="theme-color">`. Lo decide la spec que lo necesite, derivando el valor del token y sin copiar el literal fuera de las carpetas revisadas.
 
 ### Contraste y sincronía (CA-5, CA-8)
 
@@ -216,7 +238,7 @@ Descartados a propósito: gestores de hooks (`husky`, `lefthook`), porque `core.
 - **Presupuesto**: `pnpm perf`.
 - **Puertas demostradas fallando**, un cambio provocado cada una. Se guarda la salida en rojo como evidencia y se revierte el cambio:
   1. `class="bg-[#fff]"` en `index.astro` → `pnpm check` falla con archivo y línea.
-  2. `--color-fg-subtle` oscurecido a `#5A5E69` → `pnpm test -- design-tokens` falla con el par y el ratio.
+  2. `--color-fg-subtle` oscurecido a `#5A5E69` → `pnpm test design-tokens` falla con el par y el ratio.
   3. Un `<script>` en línea de más de 180 kB → `pnpm perf` falla por tamaño y por tiempo de bloqueo.
   4. Una aserción rota en un test → `git commit` bloqueado por el hook.
   5. Una propuesta de cambio con una prueba en rojo → comprobación roja en GitHub y ningún despliegue de previsualización.

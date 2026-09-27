@@ -30,7 +30,7 @@ Origen (teoría previa al marco, en la raíz): plan_portfolio_universe_mission_c
 <!-- PENDIENTES DE VERIFICAR: el proyecto Astro aún no está creado. Al crearlo, ejecuta cada uno una vez y borra esta advertencia. Un comando inventado es peor que ninguno. -->
 - Instalar: `pnpm install`
 - Ejecutar en desarrollo: `pnpm dev`
-- Tests (rápidos, para el ciclo por tarea): `pnpm test -- <patrón>` — un test concreto, no la suite
+- Tests (rápidos, para el ciclo por tarea): `pnpm test <patrón>` — un test concreto, no la suite. Sin `--`: pnpm 12 lo pasa tal cual y Vitest ignora el filtro que va detrás
 - Tests completos: `pnpm test:all` (unitarios + navegador)
 - Lint / formato / type-check: `pnpm check`
 - Build: `pnpm build`
