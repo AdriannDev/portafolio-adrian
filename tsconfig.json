@@ -1,5 +1,10 @@
 {
   "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    // Los .ts que leen archivos (pruebas y scripts) importan de node:*; sin esto, astro check falla con ts(2591).
+    // Nombrarlo aquí apaga la inclusión automática del resto de @types/*: si se instala uno, se añade a la lista
+    "types": ["node"]
+  },
   "include": [".astro/types.d.ts", "**/*"],
   "exclude": ["dist", "design"]
 }

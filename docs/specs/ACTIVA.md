@@ -1,1 +1,1 @@
-001-fundacion-tecnica — plan aprobado (2026-09-26), T1 a T6 hechas; siguiente: T7 en sesión limpia, en la rama feat/001-fundacion-tecnica (requisito previo: `@types/node`, con ADR-012 y plan actualizados antes de instalarlo)
+001-fundacion-tecnica — plan aprobado (2026-09-26), T1 a T7 hechas; siguiente: T8 (pruebas de navegador con Playwright) en sesión limpia, en la rama feat/001-fundacion-tecnica
