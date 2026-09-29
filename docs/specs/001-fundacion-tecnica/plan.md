@@ -35,7 +35,7 @@ GitHub Actions ejecuta las cinco y publica: una previsualización por propuesta 
 | `docs/04-roadmap.md` | modificar | Cabeceras de seguridad en 003; CA-17 y CA-18 se completan en 015 | T1 ✔ |
 | `package.json` | crear | `packageManager: "pnpm@12.4.2"`, scripts (tabla de §Diseño técnico), dependencias | T2 |
 | `astro.config.mjs` | crear | Plugin de Tailwind para Vite; `fonts` con 3 familias | T2, T3 |
-| `tsconfig.json` | crear | Extiende `astro/tsconfigs/strict` (ADR-002) | T2 |
+| `tsconfig.json` | crear, modificar | Extiende `astro/tsconfigs/strict` (ADR-002); `"types": ["node"]` al llegar `@types/node` | T2, T7 |
 | `.gitignore` | modificar | Añadir `.astro/`, `.wrangler/`, `.lighthouseci/`, `test-results/`, `playwright-report/`, `coverage/` | T2 |
 | `src/styles/globals.css` | crear | Bloque de §12.1 íntegro; las familias apuntan a las variables de la API de fuentes | T3 |
 | `src/layouts/BaseLayout.astro` | crear | `<html lang="es-PE">`, `title`, `description`, `<Font>` (solo display con `preload`) | T3 |
@@ -47,7 +47,7 @@ GitHub Actions ejecuta las cinco y publica: una previsualización por propuesta 
 | `scripts/lib/find-literals.mjs` · `scripts/check-literals.mjs` | crear | Lógica pura de detección y su ejecutable | T6 |
 | `vitest.config.ts` | crear | Pruebas unitarias en `tests/unit/` | T6 |
 | `tests/unit/find-literals.test.ts` | crear | Casos que deben pasar y fallar | T6 |
-| `tests/unit/design-tokens.test.ts` | crear | Sincronía documento–CSS, reinicios y matriz de contraste | T7 |
+| `tests/unit/design-tokens.test.ts` | crear | Sincronía documento–CSS, reinicios y matriz de contraste; añade `@types/node` a `package.json` | T7 |
 | `playwright.config.ts` · `tests/e2e/foundation.spec.ts` | crear | Pruebas de navegador contra `astro preview` | T8 |
 | `lighthouserc.json` | crear | Perfil fijado, 3 ejecuciones, mediana, aserciones | T9 |
 | `scripts/lib/size-budget.mjs` · `scripts/check-size-budget.mjs` · `tests/unit/size-budget.test.ts` | crear | Tamaños con gzip de la portada | T9 |
@@ -132,14 +132,17 @@ Lo que la plataforma obliga a escribir como literal falla: el blanco y negro de 
 
 `tests/unit/design-tokens.test.ts` lee `docs/03-diseno/sistema-diseno.md` y `src/styles/globals.css`:
 
-1. Extrae el primer bloque ```` ```css ```` de §12.1 y comprueba que **cada** variable declarada allí existe en `globals.css` con el mismo valor. Las familias y la transición por defecto, en `@theme inline`, se comparan igual que el resto: desde T3, §12.1 y `globals.css` son idénticos.
-2. Comprueba que están los diez reinicios (`--color-*: initial`, `--text-shadow-*: initial`, etc.).
-3. Recalcula la matriz de §2.2 con la fórmula de WCAG 2.x:
+1. Extrae el primer bloque ```` ```css ```` de §12.1 y comprueba que **cada** variable declarada allí existe en `globals.css`, en el mismo bloque y con el mismo valor, y que `globals.css` no declara ninguna que §12.1 no tenga: es copia literal, y la sincronía se comprueba en los dos sentidos. Las familias y la transición por defecto, en `@theme inline`, se comparan igual que el resto. La comparación es de declaraciones, no de texto, así que un comentario o un salto de línea no la rompen; el bloque forma parte de la identidad porque `--duration-section` se declara dos veces con valores distintos (`:root` y la consulta de movimiento reducido).
+2. Comprueba que están los diez reinicios (`--color-*: initial`, `--text-shadow-*: initial`, etc.), ni uno más ni uno menos. **`--leading-*` y `--tracking-*` no se reinician** (decidido en T7): CA-5 enumera color, familia tipográfica, tamaño de texto, radio, sombra y curva de animación, y no nombra el interlineado ni el interletraje. Quedan disponibles `leading-loose`, `tracking-tighter`, `-normal`, `-wide`, `-wider` y `-widest` de Tailwind, que no son tokens del sistema: hueco conocido, anotado para la retro de la iteración.
+3. Recalcula la matriz de §2.2 con la fórmula de WCAG 2.x a partir de los `--color-*` hexadecimales de `globals.css` (`--color-overlay` no entra: es un velo, no un par de la matriz) y exige los mínimos:
    - texto (`fg`, `fg-muted`, `fg-subtle`, `accent`, `success`, `warning`, `danger`) ≥ 4,5 sobre `bg`, `bg-elevated`, `surface` y `surface-hover`;
    - `line-control` y `accent` ≥ 3 sobre los mismos fondos;
    - `accent-fg` ≥ 4,5 sobre `accent` y `accent-hover`.
 
    Cada fallo nombra el par y su ratio.
+4. Compara cada ratio calculado, redondeado a dos decimales, con el que **documenta** §2.2: la tabla de texto (28 pares) y las dos frases en prosa (`line-control` sobre los cuatro fondos y `accent` como anillo de foco; `accent-fg` sobre `accent` y `accent-hover`). Lo pide la regla 24, que exige el ratio documentado para cada par, y es lo que §2.2 promete de sí misma. `line` y `line-strong` quedan fuera: §2.2 las declara decorativas, sin mínimo, y documenta rangos, no pares. Si el documento no trae el ratio de un par, la prueba dice cuál falta. Contrapartida: el lector depende de cómo estén redactadas esas dos frases.
+
+La prueba lee archivos con `node:fs`, y `astro check` revisa todos los `.ts` del `tsconfig`: necesita **`@types/node`** y `"types": ["node"]` en `tsconfig.json`. Es una dependencia nueva, así que [ADR-012](../../02-arquitectura/decisiones/ADR-012-herramientas-verificacion.md) y este plan se actualizan y se confirman antes de instalarla (regla 8).
 
 ### Presupuesto de rendimiento (CA-11)
 

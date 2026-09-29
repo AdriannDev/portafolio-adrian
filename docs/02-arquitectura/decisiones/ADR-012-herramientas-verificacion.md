@@ -36,6 +36,7 @@ Se adoptan las cuatro opciones elegidas. Lighthouse CI se configura con el perfi
 | `typescript`, `@astrojs/check` | Tipado estricto y su comprobación | ADR-002 |
 | `tailwindcss`, `@tailwindcss/vite` | Estilos y tokens | ADR-003 |
 | `vitest` | Pruebas unitarias | ADR-009 |
+| `@types/node` | Tipos de Node para las pruebas y los scripts que leen archivos del disco | Este ADR |
 | `@playwright/test`, `@axe-core/playwright` | Pruebas de navegador y de accesibilidad | ADR-009 |
 | `@lhci/cli` | Presupuesto de rendimiento | ADR-009 y este ADR |
 | `prettier`, `prettier-plugin-astro` | Formato | Este ADR |
@@ -44,9 +45,12 @@ Se adoptan las cuatro opciones elegidas. Lighthouse CI se configura con el perfi
 
 Las fuentes tipográficas no añaden paquete: las gestiona la API de fuentes nativa de Astro.
 
+`@types/node` se añadió al implementar la spec 001 (tarea T7). No es una herramienta nueva, sino los tipos del runtime que ya ejecuta todo lo anterior: `astro check` revisa todos los `.ts` del `tsconfig`, y un `.ts` que importe `node:fs` falla con `ts(2591)` sin ellos. Lo necesitan la prueba de tokens (lee el sistema de diseño y `globals.css`), la del presupuesto de tamaños y, si se le añade una, la del ejecutable de literales. Alternativa descartada: leer los archivos con las importaciones `?raw` de Vite, que evitarían la dependencia pero solo funcionan dentro del empaquetador, no en los scripts de `scripts/`.
+
 ## Consecuencias
 
 - Positivas: toda dependencia de la fundación tiene un ADR que la justifica; las mismas comprobaciones corren en local y en la integración continua; el hook de git no depende de ninguna herramienta.
+- `@types/node` obliga a declarar `"types": ["node"]` en `tsconfig.json`, como pide el propio error de TypeScript. Esa opción desactiva la inclusión automática del resto de `@types/*`: hoy no hay ninguno más, y los paquetes que llegan después (`@playwright/test`, `@axe-core/playwright`) traen sus tipos por importación, pero si alguna vez se instala uno que dependa de la inclusión automática, habrá que nombrarlo también en esa lista.
 - Negativas / deuda asumida: `core.hooksPath` se configura por clon. Lo hace el script `prepare` al instalar, pero si alguien clona sin instalar, el hook no está activo (la integración continua sigue verificando). La medición de laboratorio no mide la respuesta a interacciones: se usa el tiempo total de bloqueo como sustituto, y la medición real llega con la spec 011 y la analítica.
 - Qué habría que hacer para revertirla: sustituir las configuraciones de formato y análisis y el archivo del presupuesto; ningún código de producto depende de estas herramientas.
 - Revisar el: al cerrar la iteración 1, midiendo cuánto tarda el hook de confirmación y cuántos minutos consume la integración continua.
