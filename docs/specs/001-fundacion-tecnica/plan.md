@@ -69,8 +69,8 @@ Coherentes con la sección Comandos de `CLAUDE.md` (CA-1):
 | `check` | `astro check && eslint . && prettier --check . && node scripts/check-literals.mjs` |
 | `format` | `prettier --write .` |
 | `test` | `vitest run`; se filtra con `pnpm test <patrón>`, sin `--`: pnpm 12 reenvía el `--` al script, y Vitest no toma como filtro lo que va detrás (comprobado en T6) |
-| `test:e2e` | `playwright test` (necesita `dist/`; lo sirve `astro preview`) |
-| `test:all` | `vitest run && pnpm build && playwright test` |
+| `test:e2e` | `pnpm build && playwright test` (`astro preview` sirve el `dist/` recién construido). Ajustado en T8: sin el build, una ejecución sobre un `dist/` viejo daría verde en silencio, justo cuando se comprueba que una puerta falla |
+| `test:all` | `vitest run && pnpm test:e2e` |
 | `perf` | `pnpm build && pnpm perf:measure` |
 | `perf:measure` | `lhci autorun && node scripts/check-size-budget.mjs` (la integración continua lo llama tras su propio build) |
 | `rollback` | `wrangler rollback` |
@@ -164,13 +164,17 @@ La prueba lee archivos con `node:fs`, y `astro check` revisa todos los `.ts` del
 
 ### Pruebas de navegador (CA-4, CA-6, CA-9, accesibilidad)
 
-`playwright.config.ts`: Chromium, `webServer` con `pnpm preview` en el puerto 4321 y `reuseExistingServer` fuera de la integración continua. `tests/e2e/foundation.spec.ts`:
+`playwright.config.ts`: Chromium, `webServer` con `pnpm preview` en el puerto **4323** y `reuseExistingServer: false` siempre. Ajustado al implementar T8: el 4321 suele tener un `astro dev` de Adrián y el 4322 es el `preview` del navegador integrado (`.claude/launch.json`); reutilizar cualquiera de los dos probaría otro servidor en vez del `dist/` recién construido, que es lo que estas pruebas verifican. Si el puerto está ocupado, Playwright falla con un error claro. `tests/e2e/foundation.spec.ts`:
 
 - `html[lang="es-PE"]`, `<title>` y `<meta name="description">` no vacíos.
 - Registro de todas las peticiones: todas del propio origen; como máximo 6 de fuentes; como máximo 3 valores distintos de `font-family` resueltos por los elementos visibles.
-- Con `page.emulateMedia({ reducedMotion: 'reduce' })`, `getComputedStyle(document.documentElement).getPropertyValue('--duration-section')` vale cero. El minificador reescribe las duraciones en segundos (`0s`, `.48s`; comprobado en T3), así que se compara el valor numérico, no el texto `0ms`.
+- Con `page.emulateMedia({ reducedMotion: 'reduce' })`, `getComputedStyle(document.documentElement).getPropertyValue('--duration-section')` vale cero. El minificador reescribe las duraciones en segundos (`0s`, `.48s`; comprobado en T3), así que se compara el valor numérico, no el texto `0ms`. Con `no-preference`, la contraprueba exige que sean mayores que cero: sin ella, unas duraciones puestas a cero siempre pasarían en verde.
 - `@axe-core/playwright` sin violaciones de impacto `serious` ni `critical`.
-- Ningún CSS de `dist/` contiene variables de la paleta por defecto (`--color-red-`, `--color-blue-`, `--shadow-`…).
+- Ningún CSS de `dist/` contiene variables de la paleta por defecto (`--color-red-`, `--color-blue-`, `--shadow-`…). Implementado en T8 como lista blanca en vez de lista negra: se recogen las variables que declaran los `.css` de `dist/` y los `<style>` de sus `.html`, se filtran las categorías que enumera CA-5 y cada una debe estar declarada o referenciada con `var()` en `globals.css`. La referencia es lo que admite `--font-instrument-serif`, `--font-geist` y `--font-geist-mono`, que declara la API de fuentes de Astro. Quedan fuera `--tw-*`, `--font-weight-*`, `--leading-*` y `--tracking-*`, categorías que CA-5 no nombra (decisión de T7).
+- Los archivos de fuente de `dist/` son 6 como máximo: es la forma directa de CA-9, que habla de lo que se sirve y no solo de lo que la portada pide.
+- Todo `.html` de `dist/` declara `lang="es-PE"`, no solo la portada: CA-4 dice «todo documento que genere», así que la comprobación crece sola con las páginas de la 002.
+
+Límites conocidos de estas pruebas, para no darlas por más de lo que son: la lista blanca de CA-5 compara **nombres**, no valores —un token publicado con su nombre correcto y otro valor pasa; el lado del valor lo cubre `design-tokens` solo para `globals.css`—; del HTML se leen los bloques `<style>`, no los atributos `style="--x: …"` con los que Astro materializa `define:vars` (habrá que extenderlo en la 003); y el lector de CSS de T8 y el `parseDeclarations` de `design-tokens` son dos implementaciones distintas: cuando aparezca un tercer consumidor, conviene unificarlos en un ayudante compartido.
 
 ### Hook local (CA-12)
 
@@ -181,7 +185,7 @@ La prueba lee archivos con `node:fs`, y `astro check` revisa todos los `.ts` del
 `.github/workflows/ci.yml`, en `pull_request` y en `push` a `main`:
 
 - `concurrency: ci-${{ github.ref }}` con `cancel-in-progress` **solo** en propuestas, para no cortar nunca un despliegue de `main`.
-- **`verify`** (`permissions: contents: read`): checkout → `pnpm/action-setup` (lee `packageManager`) → `actions/setup-node` con Node 24 y caché de pnpm → `pnpm install --frozen-lockfile` → `pnpm check` → `pnpm test` → `pnpm build` → `pnpm exec playwright install --with-deps chromium` → `pnpm test:e2e` → `pnpm perf:measure`. Sube `dist/` como artefacto, y `.lighthouseci/` y el informe de Playwright con `if: always()`.
+- **`verify`** (`permissions: contents: read`): checkout → `pnpm/action-setup` (lee `packageManager`) → `actions/setup-node` con Node 24 y caché de pnpm → `pnpm install --frozen-lockfile` → `pnpm check` → `pnpm test` → `pnpm build` → `pnpm exec playwright install --with-deps chromium` → `pnpm exec playwright test` (directo, no `pnpm test:e2e`: el build ya está hecho) → `pnpm perf:measure`. Sube `dist/` como artefacto, y `.lighthouseci/` y el informe de Playwright con `if: always()`.
 - **`deploy-preview`** (solo en `pull_request`; `needs: verify`; permisos `contents: read` y `pull-requests: write`): descarga `dist/`, instala, ejecuta `pnpm exec wrangler versions upload --preview-alias pr-${{ github.event.pull_request.number }}`, extrae la URL de la salida y la publica como comentario en la propuesta, editando el anterior si existe (CA-13).
 - **`deploy-production`** (solo en `push` a `main`; `needs: verify`): descarga `dist/`, instala y ejecuta `pnpm exec wrangler deploy` (CA-14). Como depende de `verify`, un rojo impide publicar (CA-15).
 - Las acciones de terceros se fijan **por SHA de commit**, resuelto al implementar (cadena de suministro).
@@ -254,7 +258,7 @@ Lo ejecuta T14, desde Git Bash en la raíz del proyecto:
 ```bash
 pnpm install
 pnpm check && pnpm test
-pnpm build && pnpm test:e2e
+pnpm test:e2e
 pnpm perf
 ```
 

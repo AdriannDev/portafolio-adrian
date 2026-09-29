@@ -10,14 +10,18 @@
     "preview": "astro preview",
     "check": "astro check && eslint . && prettier --check . && node scripts/check-literals.mjs",
     "format": "prettier --write .",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:e2e": "pnpm build && playwright test",
+    "test:all": "vitest run && pnpm test:e2e"
   },
   "dependencies": {
     "astro": "^7.3.5"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "@axe-core/playwright": "^4.13.0",
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/vite": "^4.3.3",
     "@types/node": "^24.19.0",
     "eslint": "^10.11.0",
