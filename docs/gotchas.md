@@ -36,6 +36,9 @@
 - **Un script que bloquea el análisis del documento no mueve el tiempo de bloqueo**, que se mide entre el primer pintado y la interactividad: su coste va a LCP. Para provocar `total-blocking-time` hay que lanzar la tarea larga **después** del primer pintado.
 - **Para superar un presupuesto de tamaño hay que usar relleno incompresible** (base64 aleatorio): un relleno repetitivo se comprime a nada.
 - **Los dos ejecutables, `check-literals.mjs` y `check-size-budget.mjs`, no tienen prueba automática** (constitución regla 1). Sus salvaguardas se han visto en rojo a mano.
+- **`pnpm install` no ejecuta `prepare` si no tiene nada que instalar**: sale con «Already up to date» en milisegundos y se lo salta, así que el hook de git no se activa. Solo lo dispara una instalación real (clon nuevo, lockfile cambiado, `--force`).
+- **Un hook de git con CRLF falla** con `/bin/sh^M: bad interpreter`. `.githooks/pre-commit` va en LF, y el bit de ejecución se pone en el índice con `git update-index --chmod=+x`, porque Windows no lo guarda en el sistema de archivos.
+- **El hook tarda ~15 s en caliente y ~61 s en frío** justo después de instalar, porque Vite reoptimiza las dependencias. El techo acordado son 60 s: en frío lo roza.
 - **ESLint no lee `.gitignore`**: cada carpeta generada nueva se añade a `globalIgnores` de `eslint.config.js`.
 - **`"types": ["node"]` en `tsconfig.json` apaga la inclusión automática del resto de `@types/*`**: el que dependa de ella hay que nombrarlo en esa lista.
 - **`pnpm add -D @types/node` instala la última mayor**, más nueva que el Node de la máquina, y aceptaría API que no existen. Fijar `^24`.

@@ -1,1 +1,1 @@
-001-fundacion-tecnica — plan aprobado (2026-09-26), T1 a T9 hechas; siguiente: T10 (hook de git versionado en .githooks/pre-commit, activado por el script prepare) en sesión limpia, en la rama feat/001-fundacion-tecnica
+001-fundacion-tecnica — plan aprobado (2026-09-26), T1 a T10 hechas; siguiente: el paso manual de Adrián (repositorio privado en GitHub, cuenta de Cloudflare, token y secretos, `git remote add origin`) y después T11 (wrangler.jsonc, trabajos verify y deploy-production, primer empuje a main), en la rama feat/001-fundacion-tecnica
