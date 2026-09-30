@@ -37,6 +37,8 @@ const JS_TYPES = new Set(
 // Los cuantificadores van acotados: sin tope, una lista de atributos con una comilla sin cerrar hace retroceder al
 // motor en tiempo exponencial (mismo motivo que en find-literals.mjs)
 const TAG = /<([a-z][\w-]*)((?:[^>"']|"[^"]*"|'[^']*'){0,4000})>/iy;
+// Apertura de una etiqueta que se mide, para detectar las que TAG no reconoce
+const MEASURED_TAG_START = /<(script|style|link)(?![\w-])/iy;
 const ATTRIBUTE = /([a-z_:][\w:.-]*)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+))/gi;
 // El navegador también cierra con </script/> y con </script atributos>: si el cierre no se reconoce, el cuerpo se
 // traga el resto del documento y el CSS que venga detrás deja de contarse
@@ -112,6 +114,11 @@ export function measurePageWeight(html, readAsset) {
     TAG.lastIndex = open;
     const tag = TAG.exec(html);
     if (tag === null) {
+      // Una etiqueta de las que se miden que TAG no reconoce (comilla sin cerrar, más atributos de los que admite el
+      // tope) no se salta en silencio: su activo dejaría de contarse y el total bajaría sin avisar
+      MEASURED_TAG_START.lastIndex = open;
+      const unparsed = MEASURED_TAG_START.exec(html);
+      if (unparsed !== null) unresolved.add(`<${unparsed[1].toLowerCase()}> sin analizar en la posición ${open}`);
       index = open + 1;
       continue;
     }

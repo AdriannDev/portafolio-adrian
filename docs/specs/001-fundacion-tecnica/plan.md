@@ -222,7 +222,7 @@ Límites conocidos de estas pruebas, para no darlas por más de lo que son: la l
 - **Vuelta atrás** (CA-16): `pnpm rollback` sin argumentos vuelve al **despliegue** anterior con el 100 % del tráfico, nunca a una versión solo subida como previsualización, y pide confirmación; con un identificador vuelve a esa versión. Corregido en T12 tras leer el código de wrangler 4.143.0 (`fetchDefaultRollbackVersionId`): no lista versiones. En local exige un `wrangler login` previo. Cloudflare conserva las 100 últimas.
 - **`noindex`** (CA-17): `public/_headers` con `/*` → `X-Robots-Tag: noindex`. Workers aplica `_headers` a los activos estáticos. La spec 015 lo retira al lanzar.
 - **Cifrado** (CA-18): en `*.workers.dev`, el dominio `.dev` está en la lista de precarga HSTS, así que ningún navegador usa HTTP. La redirección explícita para otros clientes se activa con el dominio propio en la 015.
-- **Coste** (CA-20): Workers con activos estáticos, capa gratuita con uso comercial permitido (ADR-007). Repositorio privado: 2.000 minutos al mes de integración continua en la capa gratuita; se mide el consumo al cerrar la iteración (ADR-012).
+- **Coste** (CA-20): Workers con activos estáticos, capa gratuita con uso comercial permitido (ADR-007). Repositorio privado: 2.000 minutos al mes de integración continua en la capa gratuita; se mide el consumo al cerrar la iteración (ADR-012). Actualizado en T14: el repositorio es público, y en los runners estándar esos minutos no tienen límite.
 
 ## Patrones existentes a seguir
 

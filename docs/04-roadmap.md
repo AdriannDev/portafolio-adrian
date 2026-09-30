@@ -24,7 +24,7 @@
 
 | # | Feature | Prioridad | Spec | Cubre | Depende de | Estado |
 |---|---|---|---|---|---|---|
-| 1 | Fundación técnica y verificación automática | Must | [001-fundacion-tecnica](specs/001-fundacion-tecnica/spec.md) | RNF-01 (límites), RNF-04, CA-N06.4, CA-N07.5, CA-N02.1, CA-N02.2, regla 24 | — | plan aprobado; T1 hecha |
+| 1 | Fundación técnica y verificación automática | Must | [001-fundacion-tecnica](specs/001-fundacion-tecnica/spec.md) | RNF-01 (límites), RNF-04, CA-N06.4, CA-N07.5, CA-N02.1, CA-N02.2, regla 24 | — | convergida (2026-09-30); CA-18 parcial hasta la 015 |
 | 2 | Modelo de contenido y reglas del dato | Must | 002-modelo-contenido | CA-N06.1, CA-N06.2, CA-05.2, CA-05.4, `modelo-datos.md` §3–§7 | 1 | pendiente |
 
 ## Iteración 2 · El flujo prioritario de Rosa · cierre: 2026-10-24
@@ -83,7 +83,7 @@ El brief lo señala como riesgo alto: sin material real no se pueden cerrar las 
 
 | Material | Lo necesita | Fecha límite | Estado |
 |---|---|---|---|
-| Cuenta de GitHub con repositorio privado, y cuenta de Cloudflare | 001 | 2026-10-03 | pendiente |
+| Cuenta de GitHub con repositorio privado, y cuenta de Cloudflare | 001 | 2026-10-03 | hecho (2026-09-29). El repositorio es público: se decidió mantenerlo así el 2026-09-30 |
 | **Pedir por escrito la autorización de cada cliente** (EVOX, Tensolanas Perú, Andeccoberturas, portafolio de fotografía, portafolio de publicidad). Tarda en llegar: pedirla ya | 007 | 2026-10-10 (pedida) | pendiente |
 | Email público y perfiles profesionales (LinkedIn, GitHub) | 003 | 2026-10-10 | pendiente |
 | Propiedad de analítica y contenedor del gestor de etiquetas | 004 | 2026-10-17 | pendiente |

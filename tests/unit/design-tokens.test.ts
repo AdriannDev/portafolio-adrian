@@ -13,7 +13,13 @@ const globals = await read("../../src/styles/globals.css");
 
 type Declaration = { block: string; name: string; value: string };
 
-const withoutComments = (css: string) => css.replaceAll(/\/\*[\s\S]*?\*\//g, "");
+// Las cadenas se casan antes que los comentarios y se conservan: si no, un `content: "/*"` abriría un comentario falso
+// que se tragaría las mismas declaraciones en los dos archivos, y la sincronía seguiría en verde sin compararlas
+const withoutComments = (css: string) =>
+  css.replaceAll(
+    /("(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*')|\/\*[\s\S]*?\*\//g,
+    (_match, string?: string) => string ?? "",
+  );
 const collapse = (text: string) => text.trim().replaceAll(/\s+/g, " ");
 
 /**
@@ -88,6 +94,13 @@ const ANCHORS = [
   ":root > --duration-section",
   "@media (prefers-reduced-motion: reduce) > :root > --duration-section",
 ];
+
+describe("lector de CSS de esta prueba", () => {
+  it("un /* dentro de una cadena no abre un comentario", () => {
+    const css = ':root { --a: "/*"; --b: 1px; } /* fin */';
+    expect(parseDeclarations(css).map(({ name }) => name)).toEqual(["--a", "--b"]);
+  });
+});
 
 describe("§12.1 del sistema de diseño y globals.css (CA-5)", () => {
   const documentedByKey = new Map(documentedTokens.map((declaration) => [key(declaration), declaration]));
@@ -193,6 +206,13 @@ function contrastRatio(foreground: string, background: string): number {
 const round = (ratio: number) => Math.round(ratio * 100) / 100;
 /** Dos decimales y coma, como los escribe §2.2. */
 const spanish = (ratio: number) => round(ratio).toFixed(2).replace(".", ",");
+/**
+ * WCAG no redondea: 4,496 a 1 no llega a 4,5. El redondeo a dos decimales solo sirve para cotejar el ratio con el que
+ * escribe §2.2; el mínimo se compara con el valor exacto.
+ */
+const meetsMinimum = (ratio: number, minimum: number) => ratio >= minimum;
+/** Truncado, no redondeado: un ratio que no llega al mínimo nunca se muestra como si llegara («4,49», no «4,50»). */
+const spanishTruncated = (ratio: number) => (Math.floor(ratio * 100) / 100).toFixed(2).replace(".", ",");
 /** El mínimo se lee mejor sin decimales de relleno: «mínimo 3», «mínimo 4,5». */
 const spanishMinimum = (minimum: number) => String(minimum).replace(".", ",");
 
@@ -282,6 +302,13 @@ const pairs = [
 ];
 
 describe("matriz de contraste de §2.2 recalculada desde globals.css (CA-8)", () => {
+  it("compara el mínimo con el ratio exacto, sin redondear (WCAG)", () => {
+    // Redondeados a dos decimales, 4,496 y 2,996 darían 4,50 y 3,00 y pasarían
+    expect(meetsMinimum(4.496, TEXT_MINIMUM)).toBe(false);
+    expect(meetsMinimum(2.996, INTERFACE_MINIMUM)).toBe(false);
+    expect(meetsMinimum(TEXT_MINIMUM, TEXT_MINIMUM)).toBe(true);
+  });
+
   it("la tabla y la prosa de §2.2 documentan pares distintos", () => {
     // Si compartieran clave, la prosa pisaría a la tabla al fusionarlas y esa fila dejaría de comprobarse
     expect([...proseRatios.keys()].filter((pair) => tableRatios.has(pair))).toEqual([]);
@@ -295,9 +322,10 @@ describe("matriz de contraste de §2.2 recalculada desde globals.css (CA-8)", ()
 
     const ratio = contrastRatio(text!, surface!);
     const pair = pairKey(foreground, background);
-    expect(round(ratio), `${pair}: ${spanish(ratio)} (mínimo ${spanishMinimum(minimum)})`).toBeGreaterThanOrEqual(
-      minimum,
-    );
+    expect(
+      meetsMinimum(ratio, minimum),
+      `${pair}: ${spanishTruncated(ratio)} (mínimo ${spanishMinimum(minimum)})`,
+    ).toBe(true);
 
     const documented = documentedRatios.get(pair);
     expect(documented, `§2.2 no documenta el ratio de ${pair}`).toBeDefined();

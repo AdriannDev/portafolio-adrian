@@ -5,7 +5,7 @@
 
 | Campo | Valor |
 |---|---|
-| Estado | Aprobada (Gate 4 de la spec, 2026-09-26) |
+| Estado | Convergida (2026-09-30) · aprobada en el Gate 4 el 2026-09-26 |
 | Requerimientos que cubre | RNF-01 (CA-N01.4, CA-N01.5, CA-N01.6), RNF-04 (CA-N04.1, CA-N04.2, CA-N04.3, CA-N04.5), CA-N02.1, CA-N02.2, CA-N06.4, CA-N07.5 |
 | Reglas de la constitución | 2, 6, 9, 10, 11, 17, 24, 30 |
 | Iteración | 1 (cierre 2026-10-10) |
@@ -70,7 +70,7 @@ Que exista un sitio todavía vacío pero publicado, cuya calidad se verifica sol
 - **Medición inestable**: las mediciones de laboratorio varían entre ejecuciones. Una propuesta no debe rechazarse por ruido: la medición repite la toma y decide sobre un valor representativo.
 - **Página casi vacía**: la página provisional pasará el presupuesto con holgura. Por eso la prueba de que el presupuesto funciona es el caso anterior, no el resultado en verde.
 - **Finales de línea**: todo archivo generado o formateado queda con finales de línea LF y en UTF-8 sin BOM, en coherencia con `.gitattributes`.
-- **Cuota de la integración continua**: el repositorio es privado y su capa gratuita tiene minutos limitados. La verificación completa debe caber holgadamente en esa cuota con el ritmo de trabajo previsto.
+- **Cuota de la integración continua**: el repositorio es privado y su capa gratuita tiene minutos limitados. La verificación completa debe caber holgadamente en esa cuota con el ritmo de trabajo previsto. *Superado el 2026-09-30: el repositorio es público, y en los runners estándar los minutos no tienen límite.*
 - **Propuesta sin cambios de código** (solo documentación): la verificación se ejecuta igualmente; puede omitir la medición de rendimiento solo si el plan justifica cómo se garantiza que no afecta al sitio.
 
 ## Fuera de alcance
@@ -90,36 +90,38 @@ Que exista un sitio todavía vacío pero publicado, cuya calidad se verifica sol
 
 ## Riesgos y preguntas abiertas
 
-- [x] ¿Se crea ya el repositorio remoto? → Sí, privado, en esta iteración (decisión del 2026-09-26).
+- [x] ¿Se crea ya el repositorio remoto? → Sí, privado, en esta iteración (decisión del 2026-09-26). Se creó público, y en T14 se decidió mantenerlo así (2026-09-30): ver el límite de CA-10.
 - [x] Formato, análisis estático y sus configuraciones figuran en `stack.md` sin ADR, y la regla 8 lo exige para toda dependencia nueva. → Resuelto con ADR-012, que incluye el inventario de dependencias de esta spec.
 - [x] Herramienta de medición de rendimiento, número de repeticiones y cómo se aplica el perfil de referencia → Lighthouse CI con el perfil móvil por defecto (el de PageSpeed Insights, ahora con cifras en la regla 9); mediana de 3 ejecuciones; tamaños con gzip con un script propio (ADR-012).
 - [x] Mecanismo de carga de las fuentes → API de fuentes nativa de Astro, que descarga en el build y sirve desde el propio origen (plan.md).
-- [ ] Nombre del proyecto en la plataforma de alojamiento y dirección provisional → Adrián, al crear la cuenta.
-- [x] **Límite de CA-10 aceptado** (decisión del 2026-09-26): con un repositorio privado en la capa gratuita, la plataforma de código no permite proteger ramas. Una propuesta en rojo queda marcada pero no bloqueada. Queda garantizado lo esencial: nada con la verificación en rojo llega a producción (CA-15), y el hook local impide confirmar cambios con fallos (CA-12).
+- [x] Nombre del proyecto en la plataforma de alojamiento y dirección provisional → Worker `portafolio-adrian`; producción en `https://portafolio-adrian.pininodev.workers.dev` (T11).
+- [x] **Límite de CA-10 aceptado** (decisión del 2026-09-26): con un repositorio privado en la capa gratuita, la plataforma de código no permite proteger ramas. Una propuesta en rojo queda marcada pero no bloqueada. Queda garantizado lo esencial: nada con la verificación en rojo llega a producción (CA-15), y el hook local impide confirmar cambios con fallos (CA-12). **Superado el 2026-09-30**: con el repositorio público, la protección de ramas es gratuita; el ruleset de `main` exige `verify` en verde y CA-10 se cumple entero.
 - [x] **CA-18 se cumple en dos tiempos**: en la dirección provisional, el dominio de nivel superior `.dev` está en la lista de precarga HSTS de los navegadores, que nunca se conectan sin cifrar. La redirección explícita para clientes que no son navegadores solo puede activarse con el dominio propio, y se completa en la spec 015.
-- [ ] Las variables de configuración que aparezcan deben añadirse a `.env.example`. Las añade Adrián: la IA no edita archivos `.env*` (CLAUDE.md).
+- [x] Las variables de configuración que aparezcan deben añadirse a `.env.example`. Las añade Adrián: la IA no edita archivos `.env*` (CLAUDE.md). → Esta spec no necesita ninguna: los dos secretos viven en GitHub y los documenta el README (CA-19).
 
 ## Convergencia (se llena en Fase 6)
 
+Verificación end-to-end del plan ejecutada en T14 (2026-09-30), desde Git Bash: `pnpm check` en verde (15 archivos, ningún literal), 173 pruebas unitarias, 9 de navegador y `pnpm perf` en verde. Las provocaciones de cada puerta se hicieron en su tarea y constan en el registro de `tasks.md`. `/code-review` sobre el código de la spec (`dd9f6bb..HEAD`): 9 hallazgos, 4 corregidos en T14 y el resto diferidos con dueño en `docs/gotchas.md`.
+
 | Criterio | Evidencia (test / captura / reporte QA) | Estado |
 |---|---|---|
-| CA-1 | | |
-| CA-2 | | |
-| CA-3 | | |
-| CA-4 | | |
-| CA-5 | | |
-| CA-6 | | |
-| CA-7 | | |
-| CA-8 | | |
-| CA-9 | | |
-| CA-10 | | |
-| CA-11 | | |
-| CA-12 | | |
-| CA-13 | | |
-| CA-14 | | |
-| CA-15 | | |
-| CA-16 | | |
-| CA-17 | | |
-| CA-18 | | |
-| CA-19 | | |
-| CA-20 | | |
+| CA-1 | `package.json`: `pnpm install`, `dev`, `build`, `check`, `test <patrón>`, `test:all` y `perf`, todos ejecutados en T14 | Cumple |
+| CA-2 | `README.md` (T13): instalar, ejecutar, probar, publicar y volver atrás, en Git Bash sobre Windows. Clon nuevo siguiendo solo el README → instala, construye y pasa las pruebas (T13) | Cumple |
+| CA-3 | `dist/index.html` estático (T4). Capturas a 360 y 1440 px en el navegador integrado (T4 y T14), sin desplazamiento horizontal. `foundation.spec.ts` «resuelve exactamente las tres familias tipográficas» | Cumple |
+| CA-4 | `foundation.spec.ts`: «declara el español de Perú, un título y una descripción» y «…en todos los documentos que genera». Provocación con `lang` en T8 | Cumple |
+| CA-5 | `design-tokens.test.ts`: sincronía de §12.1 con `globals.css` y los diez reinicios. `foundation.spec.ts` «no publica ningún valor por defecto de las categorías de CA-5». Provocaciones en T7 y T8 | Cumple. Hueco para la retro: `--leading-*`, `--tracking-*`, `--spacing` y `--container-*` no se reinician; CA-5 no los nombra, pero la regla 6 sí nombra el espaciado |
+| CA-6 | `foundation.spec.ts`: la prueba de movimiento reducido y su contraprueba. Provocaciones en T8 | Cumple |
+| CA-7 | `find-literals.test.ts` (T6). Provocación 1: `src/pages/index.astro:10: arbitrary-value — bg-[#fff]` | Cumple en componentes, páginas y layouts. `src/scripts/` y los `.css`, pendientes antes de la primera isla (gotchas) |
+| CA-8 | `design-tokens.test.ts`: matriz de §2.2 recalculada desde `globals.css`. Provocación 2: `fg-subtle sobre bg: 3,00 (mínimo 4,5)`. En T14, el mínimo pasa a compararse sin redondear, con prueba de regresión | Cumple |
+| CA-9 | `foundation.spec.ts`: ninguna petición a terceros, 4 archivos de fuente y 3 familias. En producción (T14): 6 peticiones, todas del propio origen | Cumple |
+| CA-10 | `verify` corre formato, análisis estático, tipos, pruebas, build, navegador y presupuesto en cada propuesta (ejecuciones #3 y #4). Provocación 5 en la propuesta #1: rojo y sin despliegue. El ruleset de `main` exige `verify` para integrar (T14) | Cumple |
+| CA-11 | `lighthouserc.json` (perfil de la regla 9, mediana de 3) y `check-size-budget.mjs`. En T14: rendimiento 0,99 · accesibilidad 1,00 · LCP 1655 ms · CLS 0,0001 · TBT 0 ms · JS 0 kB de 180 · CSS 3,9 kB de 40. Provocaciones 3a y 3b en T9 | Cumple. La interacción se mide por el tiempo de bloqueo, su indicador de laboratorio; familias y archivos de fuente los comprueba `foundation.spec.ts`, y la integración continua encadena los dos |
+| CA-12 | `.githooks/pre-commit`. Provocación 4 (T10): `git commit` bloqueado con código 1, nombrando la prueba | Cumple |
+| CA-13 | `deploy-preview`. Propuesta #2: el comentario del bot se edita en vez de duplicarse; `pr-2` responde 200 con `noindex` (T12, comprobado de nuevo en T14) | Cumple |
+| CA-14 | `deploy-production`. Ejecución #5 en `main` (`7b976fd`); producción idéntica byte a byte al `dist/` local (T14) | Cumple |
+| CA-15 | `deploy-production` depende de `verify`. En la provocación 5, con `verify` en rojo, el trabajo dependiente se omitió. Además, el ruleset impide que un commit sin `verify` en verde llegue a `main` | Cumple. El mecanismo se demostró en una propuesta; en `main` no se ha provocado ningún rojo |
+| CA-16 | `pnpm rollback` (T12): → `012efdea` al 100 % → `pnpm rollback 65a6442b-…` → la versión actual, con producción en 200 todo el tiempo | Cumple |
+| CA-17 | `public/_headers`. `curl -sI` a producción, a su 404 y a `pr-2`: `x-robots-tag: noindex` (T14) | Cumple hasta el lanzamiento; la 015 retira la cabecera |
+| CA-18 | `.dev` está en la lista de precarga HSTS: el navegador integrado pide `http://` y llega a `https://` sin enviar ninguna petición sin cifrar (T14). `curl http://` responde 200 sin redirigir | Parcial, límite aceptado: la redirección explícita llega con el dominio propio (015) |
+| CA-19 | Ningún secreto en todo el historial (búsqueda en T14). `CLOUDFLARE_API_TOKEN` y `CLOUDFLARE_ACCOUNT_ID` son secretos de GitHub y los documenta el README. `.env.example` sin variables: la spec no las necesita | Cumple |
+| CA-20 | Cloudflare Workers en la capa gratuita, con uso comercial (ADR-007). GitHub Actions en un repositorio público: minutos ilimitados en los runners estándar | Cumple |

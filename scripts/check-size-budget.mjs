@@ -36,7 +36,10 @@ if (assets.length === 0) {
   process.exitCode = 1;
 }
 for (const href of unresolved) {
-  console.error(`check-size-budget: no se pudo medir «${href}» (otro origen, o el archivo no está en dist/)`);
+  console.error(
+    `check-size-budget: no se pudo medir «${href}» (otro origen, un archivo que no está en dist/ o una etiqueta que ` +
+      "el escáner no reconoce)",
+  );
 }
 const failures = budgetFailures({ js, css });
 for (const { kind, bytes, limit: max } of failures) {

@@ -1,1 +1,1 @@
-001-fundacion-tecnica — plan aprobado (2026-09-26), T1 a T11 hechas; siguiente: sesión B, T12 (deploy-preview con comentario en la propuesta y ejercicio de vuelta atrás) + T13 (README y comandos en CLAUDE.md), en la rama feat/001-fundacion-tecnica
+002-modelo-contenido — sin spec todavía; siguiente: escribir la spec (Fase 4: spec → Gate 4 → plan) en una rama feat/002-modelo-contenido creada desde `main`. Entrada: `docs/03-diseno/modelo-datos.md` §3–§7, constitución (reglas 13 a 16) y los pendientes de 002 en `docs/gotchas.md`. La 001 se convergió el 2026-09-30 (T14)
