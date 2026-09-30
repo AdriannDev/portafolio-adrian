@@ -1,1 +1,1 @@
-001-fundacion-tecnica — plan aprobado (2026-09-26), T1 a T10 hechas; siguiente: el paso manual de Adrián (repositorio privado en GitHub, cuenta de Cloudflare, token y secretos, `git remote add origin`) y después T11 (wrangler.jsonc, trabajos verify y deploy-production, primer empuje a main), en la rama feat/001-fundacion-tecnica
+001-fundacion-tecnica — plan aprobado (2026-09-26), T1 a T11 hechas; siguiente: sesión B, T12 (deploy-preview con comentario en la propuesta y ejercicio de vuelta atrás) + T13 (README y comandos en CLAUDE.md), en la rama feat/001-fundacion-tecnica

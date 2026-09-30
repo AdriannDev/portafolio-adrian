@@ -44,6 +44,12 @@
 - **`pnpm add -D @types/node` instala la última mayor**, más nueva que el Node de la máquina, y aceptaría API que no existen. Fijar `^24`.
 - **Node mínimo 24.16.0**: lo exige `eslint-plugin-astro` en todas sus versiones compatibles con ESLint 10.
 
+## Cloudflare y GitHub
+
+- **Conectar el repositorio al crear el Worker desde el panel activa Workers Builds**: un segundo camino de despliegue que no espera a `verify`, así que publicaría un commit en rojo en `main` y previsualizaciones sin verificar. En la 001 no llegó a publicar porque sus builds fallaban. Se desconecta en el Worker → Settings → Build, y se desinstala la aplicación «Cloudflare Workers and Pages» de GitHub. Si una propuesta de cambio vuelve a mostrar el check «Workers Builds», alguien lo ha reconectado.
+- **El historial de versiones conserva las que se crearon desde el panel** al crear el Worker (plantilla de ejemplo, origen «Dashboard»). Volver a «la anterior» sin mirar puede dejar producción sirviendo esa plantilla: comprobar antes la versión de destino. Las que publica la integración continua figuran como «Wrangler by Unknown», porque el token no pertenece a ningún usuario.
+- **`wrangler` acepta las comas finales** que Prettier añade en `wrangler.jsonc`.
+
 ## Pendientes que ya sabemos que van a morder
 
 | Spec | Qué |
@@ -54,4 +60,3 @@
 | 002 / 007 | Cerrar el hueco del `import()` dinámico en el presupuesto antes de meter la primera isla |
 | 010 | Una plantilla de correo HTML con estilos en línea dentro de `api/contact.ts` fallaría por literales; la 010 decide dónde vive |
 | 010 / 015 | Cloudflare aplica `_headers` solo a los activos estáticos, no a lo que genere el Worker |
-| 011 | Prettier añade comas finales en `.jsonc`: comprobar que `wrangler` acepta `wrangler.jsonc` así |

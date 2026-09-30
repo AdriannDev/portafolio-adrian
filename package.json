@@ -15,6 +15,7 @@
     "test:all": "vitest run && pnpm test:e2e",
     "perf": "pnpm build && pnpm perf:measure",
     "perf:measure": "lhci autorun && node scripts/check-size-budget.mjs",
+    "rollback": "wrangler rollback",
     "prepare": "git config core.hooksPath .githooks"
   },
   "dependencies": {

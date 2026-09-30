@@ -39,14 +39,16 @@ No se relaja: la regla 11 (rendimiento y accesibilidad ≥ 95), el presupuesto, 
 - Gestor de paquetes: **pnpm** (activado con corepack). Usar siempre este, no npm ni yarn.
 
 ## Comandos
-<!-- PENDIENTES DE VERIFICAR: el proyecto Astro aún no está creado. Al crearlo, ejecuta cada uno una vez y borra esta advertencia. Un comando inventado es peor que ninguno. -->
-- Instalar: `pnpm install`
+<!-- Verificados en la 001. Instalación desde cero y requisitos (Node, Chromium, Chrome): README.md -->
+- Instalar: `pnpm install` (activa el hook de git con `prepare`); navegador de pruebas aparte: `pnpm exec playwright install chromium`
 - Ejecutar en desarrollo: `pnpm dev`
 - Tests (rápidos, para el ciclo por tarea): `pnpm test <patrón>` — un test concreto, no la suite. Sin `--`: pnpm 12 lo pasa tal cual y Vitest ignora el filtro que va detrás
+- Tests de navegador: `pnpm test:e2e` (construye antes: nunca prueba un `dist/` viejo)
 - Tests completos: `pnpm test:all` (unitarios + navegador)
-- Lint / formato / type-check: `pnpm check`
+- Lint / formato / type-check: `pnpm check` · formatear: `pnpm format`
 - Build: `pnpm build`
-- Medición de rendimiento contra el presupuesto: `pnpm perf`
+- Medición de rendimiento contra el presupuesto: `pnpm perf` (construye y mide; `pnpm perf:measure` mide sin construir, es el de la integración continua)
+- Volver a la versión publicada anterior: `pnpm rollback` (requiere `pnpm exec wrangler login` una vez). Publicar solo lo hace `ci.yml`
 
 ## Convenciones
 - Idioma: respuestas y documentación en español; identificadores de código en inglés; textos de UI y contenido en español (los "system labels" en inglés — SYSTEM ONLINE, MISSION, STATUS — son capa visual y nunca portan información crítica: constitución regla 27).
@@ -84,5 +86,5 @@ explorador (mapear código) · revisor-codigo (revisar diff vs spec) · revisor-
 - Entorno Windows 11 + Git Bash. Los hooks del kit corren con `python` (3.12.2 instalado).
 - Los archivos de texto van en UTF-8 sin BOM y con finales de línea LF (`.gitattributes` lo fuerza). Al escribir archivos con Python usa `newline="\n"`: en Windows convierte a CRLF por defecto.
 - Para comprobar finales de línea usa `git ls-files --eol` o cuenta bytes con Python. En este Git Bash, `grep -c $'\r'` devuelve el número de líneas del archivo, no los CR: da falsos positivos de CRLF.
-- Repositorio remoto en GitHub: **no existe todavía**. Se crea privado en la iteración 1 (spec 001); lo crea Adrián.
+- Repositorio remoto: GitHub, privado, `AdriannDev/portafolio-adrian`. Sin protección de ramas (capa gratuita): una propuesta en rojo se puede fusionar, así que no se fusiona nada sin `verify` en verde. El único camino de despliegue es `ci.yml`; Workers Builds de Cloudflare va desconectado (docs/gotchas.md).
 - La capa gratuita del servicio de correo tiene un tope de 100 envíos al día.
