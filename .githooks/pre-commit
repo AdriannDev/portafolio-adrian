@@ -1,0 +1,19 @@
+#!/bin/sh
+# Impide confirmar con la verificación en rojo (CA-12; constitución reglas 2 y 30).
+# Lo activa el script prepare de package.json, que apunta core.hooksPath a esta carpeta: no hace falta ningún gestor
+# de hooks porque core.hooksPath es nativo de git (ADR-012 descartó husky y lefthook por eso).
+#
+# Límite conocido: comprueba el árbol de trabajo, no la instantánea preparada. Un «git commit <archivo>» teniendo
+# otros archivos sucios puede pasar en verde aunque lo confirmado no compile.
+#
+# Vía de escape para un caso excepcional y justificado: git commit --no-verify
+
+if pnpm check && pnpm test; then
+  exit 0
+fi
+
+echo ""
+echo "pre-commit: la verificación está en rojo y la confirmación queda bloqueada (CA-12)."
+echo "  Si solo es formato:  pnpm format"
+echo "  Para ver el detalle: pnpm check  ·  pnpm test"
+exit 1

@@ -14,7 +14,8 @@
     "test:e2e": "pnpm build && playwright test",
     "test:all": "vitest run && pnpm test:e2e",
     "perf": "pnpm build && pnpm perf:measure",
-    "perf:measure": "lhci autorun && node scripts/check-size-budget.mjs"
+    "perf:measure": "lhci autorun && node scripts/check-size-budget.mjs",
+    "prepare": "git config core.hooksPath .githooks"
   },
   "dependencies": {
     "astro": "^7.3.5"
