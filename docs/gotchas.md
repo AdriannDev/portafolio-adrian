@@ -47,7 +47,9 @@
 ## Cloudflare y GitHub
 
 - **Conectar el repositorio al crear el Worker desde el panel activa Workers Builds**: un segundo camino de despliegue que no espera a `verify`, así que publicaría un commit en rojo en `main` y previsualizaciones sin verificar. En la 001 no llegó a publicar porque sus builds fallaban. Se desconecta en el Worker → Settings → Build, y se desinstala la aplicación «Cloudflare Workers and Pages» de GitHub. Si una propuesta de cambio vuelve a mostrar el check «Workers Builds», alguien lo ha reconectado.
-- **El historial de versiones conserva las que se crearon desde el panel** al crear el Worker (plantilla de ejemplo, origen «Dashboard»). Volver a «la anterior» sin mirar puede dejar producción sirviendo esa plantilla: comprobar antes la versión de destino. Las que publica la integración continua figuran como «Wrangler by Unknown», porque el token no pertenece a ningún usuario.
+- **El historial de versiones conserva las que se crearon desde el panel** al crear el Worker (plantilla de ejemplo, origen «Dashboard»). Volver a «la anterior» sin mirar puede dejar producción sirviendo esa plantilla: comprobar antes la versión de destino. Las que publica la integración continua figuran como «Wrangler by Unknown» en el panel y como `Unknown (deployment)` en `wrangler deployments list`, porque el token no pertenece a ningún usuario.
+- **`pnpm rollback` sin argumentos vuelve al despliegue anterior con el 100 % del tráfico.** Las versiones subidas como previsualización no son despliegues, así que nunca son su destino. Pregunta primero el mensaje y después la confirmación: una «y» escrita a destiempo acaba como mensaje del despliegue.
+- **Un alias de previsualización nuevo tarda ~1 min en responder.** Antes, Cloudflare devuelve su «Page not found» genérica, no la página del sitio. No es un fallo del despliegue: se reintenta.
 - **`wrangler` acepta las comas finales** que Prettier añade en `wrangler.jsonc`.
 
 ## Pendientes que ya sabemos que van a morder

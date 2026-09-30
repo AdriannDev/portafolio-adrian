@@ -1,1 +1,1 @@
-001-fundacion-tecnica — plan aprobado (2026-09-26), T1 a T11 hechas; siguiente: sesión B, T12 (deploy-preview con comentario en la propuesta y ejercicio de vuelta atrás) + T13 (README y comandos en CLAUDE.md), en la rama feat/001-fundacion-tecnica
+001-fundacion-tecnica — plan aprobado (2026-09-26), T1 a T13 hechas; siguiente: sesión C, T14 (verificación end-to-end, `/code-review` sobre la rama, tabla de convergencia de CA-1 a CA-20, roadmap e integración a `main`), en la rama feat/001-fundacion-tecnica
