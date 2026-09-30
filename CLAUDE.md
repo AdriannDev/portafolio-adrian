@@ -11,8 +11,20 @@ Origen (teoría previa al marco, en la raíz): plan_portfolio_universe_mission_c
 - Tier: 2, confirmado en el Gate 1, **con exigencia de rendimiento superior** (constitución regla 11: 95 o más, no el 80 de la DoD). DoD por tier: checklists/dod-por-tier.md.
 - Proceso SDD del marco: spec → plan → tasks → implementar → converger.
 - Spec activa: docs/specs/ACTIVA.md (actualízala al cambiar de feature).
-- Antes de implementar cualquier tarea que toque más de un archivo: plan mode.
-- Cada tarea termina con: tests verdes + revisión (`/code-review` o subagente revisor-codigo) + commit.
+- Antes de implementar cualquier tarea que toque más de un archivo: plan mode (constitución regla 29). Para una página o un componente, el plan son cinco viñetas en el chat, no un documento.
+- Cada tarea termina con: tests verdes + evidencia + commit.
+
+### Ritmo (revisado el 2026-09-29)
+La 001 salió con 1443 líneas de herramienta de verificación para 171 de producto, y las notas de registro crecieron de 101 a 1042 palabras en ocho tareas. El rigor estaba calibrado al riesgo de las herramientas, no al del producto. Correcciones, sin tocar la constitución ni el Tier 2:
+
+- **Revisión por radio de impacto, no por tarea.** Subagente `revisor-codigo` solo en: `src/lib/`, `src/pages/api/contact.ts`, consentimiento y medición, y los esquemas de contenido. En páginas, componentes, estilos y contenido basta `pnpm check` + presupuesto + releer el diff. `qa-tester`, `revisor-seguridad` y `/security-review` van **al cierre de iteración**, que es donde los pone la DoD, no en cada tarea.
+- **Ninguna herramienta de verificación nueva.** Toda comprobación automática nueva tiene que ser una línea de configuración en algo que ya existe (ESLint, Astro, Tailwind, Playwright). Ya hay dos escáneres propios; no hay un tercero.
+- **Varias tareas por sesión.** Agrupar 3–5 tareas relacionadas en vez de `/clear` entre cada una: reconstruir contexto es el coste fijo más alto.
+- **Registro con tope.** En `tasks.md`, cada fila es el commit más **tres viñetas como máximo**, solo lo que afecte a tareas futuras. Lo reutilizable va a docs/gotchas.md. Objetivo: 80 palabras por fila.
+- **Tareas de medio día en specs de contenido**, 5–7 por spec, no de dos horas. A 12 tareas por spec, las 15 specs no entran antes del 2026-12-19.
+- **Sin ritual de provocación en cada test nuevo.** Demostrar la puerta cerrada valía para las cinco que bloquean la integración (hechas en la 001). No se repite por cada aserción.
+
+No se relaja: la regla 11 (rendimiento y accesibilidad ≥ 95), el presupuesto, `pnpm check`, el hook, un commit por tarea y la evidencia ejecutable.
 
 ## Stack
 <!-- Decisiones y alternativas descartadas en docs/02-arquitectura/decisiones/. Resumen en docs/02-arquitectura/stack.md -->
@@ -54,6 +66,7 @@ Origen (teoría previa al marco, en la raíz): plan_portfolio_universe_mission_c
 - **Regla del dato**: ninguna métrica se publica sin fuente, periodo, marca de verificación y referencia a su evidencia. El build debe fallar si falta algo.
 - **Solo** `src/lib/analytics/events.ts` emite eventos de medición. Cualquier otro archivo que empuje eventos es un defecto.
 - Al terminar una tarea muestra evidencia: salida de tests, medición o captura, no solo "listo".
+- Gotchas del entorno y del stack: docs/gotchas.md. Antes de pelearse con algo, mirar si ya está ahí; al aprender algo reutilizable, añadirlo ahí y no en la fila de `tasks.md`.
 - Al compactar, conserva siempre: lista de archivos modificados, comandos de test y la spec/tarea activa.
 
 ## Presupuesto de rendimiento (bloquea la integración)

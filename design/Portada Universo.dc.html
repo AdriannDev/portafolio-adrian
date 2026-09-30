@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&display=swap">
+  <style>
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: #0B0D12; color: #F2EFE8; -webkit-font-smoothing: antialiased; }
+    * { box-sizing: border-box; }
+    h1, h2, h3, p, dl, dd, dt, ul { margin: 0; padding: 0; }
+    a { color: #F2EFE8; } a:hover { color: #FF7A45; }
+    ::selection { background: #FF5A1F; color: #0B0D12; }
+    :focus-visible { outline: 2px solid #FF5A1F; outline-offset: 2px; }
+    input::placeholder { color: #8A8E99; }
+  </style>
+</helmet>
+
+<div style="position: relative; min-height: 100vh; background: #0B0D12; color: #F2EFE8; font-family: Geist, system-ui, -apple-system, 'Segoe UI', sans-serif; font-size: clamp(1rem, 0.9792rem + 0.0926vw, 1.0625rem); line-height: 1.65; overflow-x: hidden;">
+
+  <div aria-hidden="true" style="position: fixed; inset: 0; z-index: 0; pointer-events: none; background: radial-gradient(ellipse 60% 45% at 18% 12%, rgba(27,32,48,0.55), rgba(11,13,18,0) 70%), radial-gradient(ellipse 50% 40% at 85% 70%, rgba(21,25,35,0.6), rgba(11,13,18,0) 70%);"></div>
+  <canvas ref="{{ starsRef }}" aria-hidden="true" style="position: fixed; inset: 0; z-index: 0; pointer-events: none; display: block;"></canvas>
+
+  <header data-screen-label="Cabecera" style="position: sticky; top: 0; z-index: 200; background: rgb(11 13 18 / 0.8); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid #23272F;">
+    <div style="max-width: 90rem; margin: 0 auto; padding: 0 clamp(1.25rem, 0.1667rem + 4.8148vw, 4.5rem); height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+      <a href="#inicio" onClick="{{ goInicio }}" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: #F2EFE8; min-height: 44px;">
+        <span aria-hidden="true" style="width: 28px; height: 28px; border: 1px solid #6A707C; border-radius: 999px; display: flex; align-items: center; justify-content: center;"><span style="width: 6px; height: 6px; border-radius: 999px; background: #F2EFE8;"></span></span>
+        <span style="font-size: 15px; font-weight: 500; letter-spacing: -0.005em;">Adrián Marchan</span>
+      </a>
+      <sc-if value="{{ showNav }}" hint-placeholder-val="{{ true }}">
+      <nav aria-label="Principal" style="display: flex; align-items: center; gap: 4px;">
+        <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="4">
+          <a href="{{ n.href }}" onClick="{{ n.go }}" style="display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 {{ navPad }}; text-decoration: none; color: #A9ABB3; font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 12px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; transition: color 120ms;" style-hover="color: #F2EFE8;"><sc-if value="{{ showNavNums }}" hint-placeholder-val="{{ true }}"><span style="color: #8A8E99;">{{ n.num }}</span></sc-if>{{ n.label }}</a>
+        </sc-for>
+      </nav>
+      </sc-if>
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <sc-if value="{{ showHeaderStatus }}" hint-placeholder-val="{{ true }}"><span style="display: flex; align-items: center; gap: 8px; font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 12px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #6FB583;"><span ref="{{ pulseRef }}" style="width: 8px; height: 8px; border-radius: 999px; background: #6FB583;"></span>DISPONIBLE</span></sc-if>
+        <button type="button" onClick="{{ openPalette }}" aria-label="Abrir la consola de comandos" style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 14px; background: transparent; border: 1px solid #6A707C; border-radius: 4px; color: #F2EFE8; font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 12px; letter-spacing: 0.02em; cursor: pointer; transition: background-color 120ms;" style-hover="background: #1B2030;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M7 10l3 2-3 2M13 14h4"></path></svg>
+          {{ kbdLabel }}
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main style="position: relative; z-index: 1;">
+
+    <section id="inicio" data-screen-label="Hero" style="position: relative; min-height: calc(100vh - 72px); display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden;">
+      <div aria-hidden="true" style="position: absolute; inset: 0; pointer-events: none; -webkit-mask-image: linear-gradient(to bottom, #000 62%, transparent 100%); mask-image: linear-gradient(to bottom, #000 62%, transparent 100%);">
+        <div style="position: absolute; inset: 0; background: radial-gradient(ellipse 70% 60% at 72% 18%, rgba(27,32,48,0.85), rgba(11,13,18,0) 72%);"></div>
+        <div style="position: absolute; left: 50%; bottom: 0; width: 130vw; height: 50vh; transform: translateX(-50%); background: radial-gradient(ellipse 45% 55% at 50% 70%, rgba(169,171,179,0.14), rgba(11,13,18,0) 70%);"></div>
+        <div style="position: absolute; left: 50%; top: calc(100% - 26vh); width: max(1800px, 150vw); aspect-ratio: 1 / 1; transform: translateX(-50%); border-radius: 999px; border: 1px solid rgba(242,239,232,0.32); background: radial-gradient(circle at 50% 0%, #1B2030 0%, #10131A 8%, #0B0D12 22%);"></div>
+        <div ref="{{ grainRef }}" style="position: absolute; inset: 0; opacity: 0.04;"></div>
+      </div>
+
+      <div style="position: relative; width: 100%; max-width: 90rem; margin: 0 auto; padding: 128px clamp(1.25rem, 0.1667rem + 4.8148vw, 4.5rem) calc(26vh + 32px);">
+        <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 48px;">
+          <div style="flex: 1 1 640px; max-width: 980px; display: flex; flex-direction: column; gap: 32px;">
+            <div ref="{{ heroLabelRef }}" aria-hidden="true" style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 12px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #8A8E99;">
+              <span style="display: flex; align-items: center; gap: 8px; color: #F2EFE8;"><span style="width: 8px; height: 8px; border-radius: 999px; background: #FF5A1F;"></span>SYSTEM ONLINE</span>
+              <span>LAT −12.046 · LON −77.043</span>
+            </div>
+            <h1 style="font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif; font-weight: 400; font-size: clamp(2.5rem, 1.5833rem + 4.0741vw, 5.25rem); line-height: 1; letter-spacing: -0.01em; text-wrap: balance; max-width: 17ch;">Diseño y construyo productos digitales que <em style="font-style: italic; color: #FF5A1F;">despegan</em> y se quedan en órbita.</h1>
+            <div ref="{{ heroLeadRef }}" style="display: flex; flex-direction: column; gap: 8px; max-width: 58ch;">
+              <p style="font-size: 15px; font-weight: 500; color: #F2EFE8;">Adrián Marchan · Lima, Perú</p>
+              <p style="font-size: clamp(1.125rem, 1.0833rem + 0.1852vw, 1.25rem); line-height: 1.5; color: #A9ABB3; text-wrap: pretty;">Sitios web, tiendas en línea, automatización, SEO técnico y analítica para negocios que necesitan crecer sin perder el rumbo.</p>
+            </div>
+            <div ref="{{ heroActionsRef }}" style="display: flex; flex-wrap: wrap; gap: 12px;">
+              <a href="https://wa.me/51900000000" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 22px; background: #FF5A1F; color: #0B0D12; border-radius: 4px; font-size: 14px; font-weight: 500; line-height: 1.3; text-decoration: none; transition: background-color 120ms;" style-hover="background: #FF7A45; color: #0B0D12;">Escribir por WhatsApp<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+              <a href="#proyectos" onClick="{{ goProyectos }}" style="display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 22px; background: transparent; color: #F2EFE8; border: 1px solid #6A707C; border-radius: 4px; font-size: 14px; font-weight: 500; line-height: 1.3; text-decoration: none; transition: background-color 120ms;" style-hover="background: #1B2030; color: #F2EFE8;">Ver proyectos</a>
+            </div>
+          </div>
+
+          <aside aria-label="Resumen" style="flex: 0 1 340px; background: rgba(21,25,35,0.72); border: 1px solid #363B47; border-radius: 4px; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; border-bottom: 1px solid #23272F; font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 12px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase;">
+              <span aria-hidden="true" style="color: #8A8E99;">TELEMETRY</span>
+              <span style="color: #8A8E99; text-transform: none; letter-spacing: 0.02em;">v1.4.2</span>
+            </div>
+            <dl style="display: flex; flex-direction: column;">
+              <div style="display: flex; justify-content: space-between; gap: 16px; padding: 14px 18px; border-bottom: 1px solid #23272F;"><dt style="font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 12px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #8A8E99;">Misiones</dt><dd style="font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 14px; letter-spacing: 0.02em; font-variant-numeric: tabular-nums;">{{ publishedCount }} publicadas</dd></div>
+              <div style="display: flex; justify-content: space-between; gap: 16px; padding: 14px 18px; border-bottom: 1px solid #23272F;"><dt style="font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 12px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #8A8E99;">Respuesta</dt><dd style="font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 14px; letter-spacing: 0.02em;">48 h hábiles</dd></div>
+              <div style="display: flex; justify-content: space-between; gap: 16px; padding: 14px 18px;"><dt style="font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 12px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #8A8E99;">Hora local</dt><dd style="font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 14px; letter-spacing: 0.02em; font-variant-numeric: tabular-nums;">Lima {{ limaShort }}</dd></div>
+            </dl>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section id="proyectos" data-screen-label="01 Proyectos" style="padding: clamp(4rem, 2.6667rem + 5.9259vw, 8rem) 0;">
+      <div style="max-width: 90rem; margin: 0 auto; padding: 0 clamp(1.25rem, 0.1667rem + 4.8148vw, 4.5rem);">
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 32px; margin-bottom: 40px;">
+          <div style="display: flex; flex-direction: column; gap: 16px; max-width: 680px;">
+            <span style="font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 12px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #8A8E99;">01 — PROYECTOS</span>
+            <h2 style="font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: clamp(1.75rem, 1.5rem + 1.1111vw, 2.5rem); line-height: 1.1; text-wrap: balance;">Cada proyecto es una misión con su propia órbita.</h2>
+            <p style="font-size: clamp(1.125rem, 1.0833rem + 0.1852vw, 1.25rem); line-height: 1.5; color: #A9ABB3; text-wrap: pretty;">Explora el mapa por categoría o cambia a cuadrícula y lista para leerlas de corrido.</p>
+          </div>
+          <div role="group" aria-label="Vista del listado" style="display: flex; padding: 4px; gap: 4px; background: rgba(21,25,35,0.8); border: 1px solid #363B47; border-radius: 4px;">
+            <sc-for list="{{ viewOptions }}" as="v" hint-placeholder-count="3">
+              <button type="button" onClick="{{ v.select }}" aria-pressed="{{ v.pressed }}" style="display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px; border-radius: 2px; border: 1px solid {{ v.border }}; background: {{ v.bg }}; color: {{ v.color }}; font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 12px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer; transition: background-color 120ms, color 120ms;">{{ v.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+
+        <sc-if value="{{ showMap }}" hint-placeholder-val="{{ true }}">
+          <div style="border: 1px solid #363B47; border-radius: 4px; background: rgba(16,19,26,0.55);">
+            <div aria-hidden="true" style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; padding: 14px 20px; border-bottom: 1px solid #23272F; font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 12px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #8A8E99;">
+              <span>UNIVERSE MAP · SECTOR LIMA</span>
+              <span>{{ missionCount }} MISIONES · 3 ÓRBITAS</span>
+            </div>
+            <div style="position: relative; width: 100%; aspect-ratio: 2 / 1;">
+              <svg viewBox="0 0 1200 600" aria-hidden="true" style="position: absolute; inset: 0; width: 100%; height: 100%;">
+                <line x1="0" y1="300" x2="1200" y2="300" stroke="#23272F" stroke-width="1"></line>
+                <line x1="600" y1="0" x2="600" y2="600" stroke="#23272F" stroke-width="1"></line>
+                <ellipse cx="600" cy="300" rx="250" ry="105" fill="none" stroke="#363B47" stroke-width="1"></ellipse>
+                <ellipse cx="600" cy="300" rx="390" ry="170" fill="none" stroke="#363B47" stroke-width="1" stroke-dasharray="3 6"></ellipse>
+                <ellipse cx="600" cy="300" rx="530" ry="238" fill="none" stroke="#363B47" stroke-width="1" stroke-dasharray="1 7"></ellipse>
+                <circle cx="600" cy="300" r="22" fill="none" stroke="#363B47" stroke-width="1"></circle>
+                <circle cx="600" cy="300" r="6" fill="#F2EFE8"></circle>
+                <text x="600" y="187" text-anchor="middle" fill="#8A8E99" style="font-family: 'Geist Mono', monospace; font-size: 11px; letter-spacing: 0.14em;">WEB</text>
+                <text x="600" y="122" text-anchor="middle" fill="#8A8E99" style="font-family: 'Geist Mono', monospace; font-size: 11px; letter-spacing: 0.14em;">E-COMMERCE</text>
+                <text x="600" y="54" text-anchor="middle" fill="#8A8E99" style="font-family: 'Geist Mono', monospace; font-size: 11px; letter-spacing: 0.14em;">AUTOMATIZACIÓN</text>
+              </svg>
+              <sc-for list="{{ missions }}" as="m" hint-placeholder-count="0">
+                <a href="#proyectos" onClick="{{ m.open }}" onMouseEnter="{{ m.enter }}" onMouseLeave="{{ m.leave }}" onFocus="{{ m.enter }}" onBlur="{{ m.leave }}" aria-label="{{ m.aria }}" style="position: absolute; left: {{ m.left }}; top: {{ m.top }}; width: 44px; height: 44px; transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; border-radius: 999px; z-index: {{ m.z }};">
+                  <span aria-hidden="true" style="position: absolute; inset: 8px; border-radius: 999px; border: 1px solid {{ m.ring }}; transition: border-color 120ms;"></span>
+                  <span aria-hidden="true" style="width: 10px; height: 10px; border-radius: 999px; background: {{ m.dot }}; transition: background-color 120ms;"></span>
+                  <span aria-hidden="true" style="position: absolute; left: 42px; top: 50%; transform: translateY(-50%); white-space: nowrap; font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 12px; letter-spacing: 0.02em; color: {{ m.codeColor }};">{{ m.code }}</span>
+                </a>
+              </sc-for>
+              <sc-if value="{{ hasHover }}" hint-placeholder-val="{{ false }}">
+                <div role="status" style="position: absolute; left: {{ hm.left }}; top: {{ hm.top }}; transform: {{ hm.transform }}; width: 320px; z-index: 5; background: #1B2030; border: 1px solid #363B47; border-radius: 4px; padding: 18px; display: flex; flex-direction: column; gap: 10px; pointer-events: none;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+                    <span style="font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 12px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #8A8E99;">{{ hm.code }} · {{ hm.year }}</span>
+                    <span style="display: inline-flex; align-items: center; gap: 8px; padding: 3px 8px; border: 1px solid #363B47; border-radius: 2px; font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 11px; font-weight: 500; letter-spacing: 0.14em; color: #A9ABB3;"><span style="width: 8px; height: 8px; border-radius: 999px; background: {{ hm.statusColor }};"></span>{{ hm.status }}</span>
+                  </div>
+                  <p style="font-family: 'Instrument Serif', Georgia, serif; font-size: 26px; line-height: 1.1;">{{ hm.title }}</p>
+                  <p style="font-size: 14px; line-height: 1.5; color: #A9ABB3;">{{ hm.summary }}</p>
+                </div>
+              </sc-if>
+            </div>
+            <p style="padding: 14px 20px; border-top: 1px solid #23272F; font-size: 14px; line-height: 1.5; color: #8A8E99;">Cada órbita es una categoría y cada punto una misión. Pasa el puntero o recorre con el tabulador para ver su ficha.</p>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ showTrajectory }}" hint-placeholder-val="{{ false }}">
+          <ol style="list-style: none; margin: 0; padding: 0 0 0 20px; border-left: 1px solid #363B47; display: flex; flex-direction: column; gap: 28px;">
+            <sc-for list="{{ missions }}" as="m" hint-placeholder-count="3">
+              <li style="position: relative; display: flex; flex-direction: column; gap: 6px;">
+                <span aria-hidden="true" style="position: absolute; left: -26px; top: 6px; width: 11px; height: 11px; border-radius: 999px; background: #0B0D12; border: 1px solid #F2EFE8;"></span>
+                <span style="font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 12px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #8A8E99;">{{ m.code }} · {{ m.catLabel }} · {{ m.year }}</span>
+                <a href="#proyectos" onClick="{{ m.open }}" style="font-family: 'Instrument Serif', Georgia, serif; font-size: clamp(1.5rem, 1.375rem + 0.5556vw, 1.875rem); line-height: 1.1; text-decoration: none; color: #F2EFE8;">{{ m.title }}</a>
+                <span style="display: flex; align-items: center; gap: 8px; font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 11px; font-weight: 500; letter-spacing: 0.14em; color: #A9ABB3;"><span style="width: 8px; height: 8px; border-radius: 999px; background: {{ m.statusColor }};"></span>{{ m.status }}</span>
+              </li>
+            </sc-for>
+          </ol>
+        </sc-if>
+
+        <sc-if value="{{ showGrid }}" hint-placeholder-val="{{ false }}">
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 24px;">
+            <sc-for list="{{ missions }}" as="m" hint-placeholder-count="3">
+              <a href="#proyectos" onClick="{{ m.open }}" style="display: flex; flex-direction: column; background: #151923; border: 1px solid #363B47; border-radius: 4px; text-decoration: none; color: #F2EFE8; transition: background-color 120ms, border-color 120ms;" style-hover="background: #1B2030; border-color: #6A707C; color: #F2EFE8;">
+                <div style="margin: 12px 12px 0; border: 1px solid #363B47; border-radius: 2px; overflow: hidden;">
+                  <div aria-hidden="true" style="display: flex; gap: 6px; padding: 8px 10px; border-bottom: 1px solid #23272F; background: #10131A;"><span style="width: 6px; height: 6px; border-radius: 999px; background: #363B47;"></span><span style="width: 6px; height: 6px; border-radius: 999px; background: #363B47;"></span><span style="width: 6px; height: 6px; border-radius: 999px; background: #363B47;"></span></div>
+                  <div style="aspect-ratio: 16 / 10; display: flex; align-items: center; justify-content: center; background: repeating-linear-gradient(135deg, #10131A 0 10px, #151923 10px 20px);"><span style="font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 12px; letter-spacing: 0.02em; color: #8A8E99;">captura del proyecto · {{ m.code }}</span></div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 12px; padding: 20px;">
+                  <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px;">
+                    <span style="font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 12px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #8A8E99;">{{ m.code }} · {{ m.catLabel }} · {{ m.year }}</span>
+                    <span style="display: inline-flex; align-items: center; gap: 8px; padding: 3px 8px; border: 1px solid #363B47; border-radius: 2px; font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 11px; font-weight: 500; letter-spacing: 0.14em; color: #A9ABB3;"><span style="width: 8px; height: 8px; border-radius: 999px; background: {{ m.statusColor }};"></span>{{ m.status }}</span>
+                  </div>
+                  <h3 style="font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: clamp(1.5rem, 1.375rem + 0.5556vw, 1.875rem); line-height: 1.1; text-wrap: balance;">{{ m.title }}</h3>
+                  <p style="font-size: 15px; line-height: 1.55; color: #A9ABB3;">{{ m.summary }}</p>
+                  <div style="display: flex; flex-wrap: wrap; gap: 6px; padding-top: 4px;">
+                    <sc-for list="{{ m.tags }}" as="tag" hint-placeholder-count="3">
+                      <span style="padding: 3px 8px; border: 1px solid #23272F; border-radius: 2px; font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 12px; letter-spacing: 0.02em; color: #A9ABB3;">{{ tag }}</span>
+                    </sc-for>
+                  </div>
+                </div>
+              </a>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ showList }}" hint-placeholder-val="{{ false }}">
+          <div style="border-top: 1px solid #363B47;">
+            <sc-for list="{{ missions }}" as="m" hint-placeholder-count="4">
+              <a href="#proyectos" onClick="{{ m.open }}" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 24px; min-height: 72px; padding: 16px 12px; border-bottom: 1px solid #23272F; text-decoration: none; color: #F2EFE8; transition: background-color 120ms;" style-hover="background: #1B2030; color: #F2EFE8;">
+                <span style="flex: 0 0 64px; font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 14px; letter-spacing: 0.02em; color: #8A8E99;">{{ m.code }}</span>
+                <span style="flex: 1 1 280px; font-size: clamp(1.125rem, 1.0833rem + 0.1852vw, 1.25rem); font-weight: 500; line-height: 1.3;">{{ m.title }}</span>
+                <span style="flex: 0 0 150px; font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 12px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #8A8E99;">{{ m.catLabel }}</span>
+                <span style="flex: 0 0 48px; font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 14px; letter-spacing: 0.02em; color: #A9ABB3;">{{ m.year }}</span>
+                <span style="flex: 0 0 150px; display: inline-flex; align-items: center; gap: 8px; font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 11px; font-weight: 500; letter-spacing: 0.14em; color: #A9ABB3;"><span style="width: 8px; height: 8px; border-radius: 999px; background: {{ m.statusColor }};"></span>{{ m.status }}</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8A8E99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+              </a>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+    </section>
+
+    <section id="servicios" data-screen-label="02 Servicios" style="padding: clamp(4rem, 2.6667rem + 5.9259vw, 8rem) 0; background: rgba(16,19,26,0.82); border-top: 1px solid #23272F; border-bottom: 1px solid #23272F;">
+      <div style="max-width: 90rem; margin: 0 auto; padding: 0 clamp(1.25rem, 0.1667rem + 4.8148vw, 4.5rem);">
+        <div style="display: flex; flex-direction: column; gap: 16px; max-width: 680px; margin-bottom: 56px;">
+          <span style="font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 12px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #8A8E99;">02 — SERVICIOS</span>
+          <h2 style="font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: clamp(1.75rem, 1.5rem + 1.1111vw, 2.5rem); line-height: 1.1; text-wrap: balance;">Cinco áreas de trabajo, una sola trayectoria.</h2>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 40px 24px;">
+          <sc-for list="{{ services }}" as="s" hint-placeholder-count="5">
+            <div style="display: flex; flex-direction: column; gap: 12px; padding-top: 20px; border-top: 1px solid #363B47;">
+              <span style="font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 12px; font-weight: 500; letter-spacing: 0.14em; color: #8A8E99;">{{ s.num }} —</span>
+              <h3 style="font-size: clamp(1.25rem, 1.1667rem + 0.3704vw, 1.5rem); font-weight: 500; line-height: 1.3;">{{ s.title }}</h3>
+              <p style="font-size: 15px; line-height: 1.6; color: #A9ABB3; text-wrap: pretty;">{{ s.body }}</p>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <section id="prueba" data-screen-label="03 Prueba" style="padding: clamp(4rem, 2.6667rem + 5.9259vw, 8rem) 0;">
+      <div style="max-width: 90rem; margin: 0 auto; padding: 0 clamp(1.25rem, 0.1667rem + 4.8148vw, 4.5rem);">
+        <div style="display: flex; flex-direction: column; gap: 16px; max-width: 680px; margin-bottom: 56px;">
+          <span style="font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 12px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #8A8E99;">03 — RESULTADOS</span>
+          <h2 style="font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: clamp(1.75rem, 1.5rem + 1.1111vw, 2.5rem); line-height: 1.1; text-wrap: balance;">Cifras medidas, no prometidas.</h2>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 1px; background: #363B47; border: 1px solid #363B47; border-radius: 4px; overflow: hidden;">
+          <sc-for list="{{ metrics }}" as="k" hint-placeholder-count="3">
+            <div style="display: flex; flex-direction: column; gap: 14px; padding: 28px; background: #151923;">
+              <span style="display: inline-flex; align-self: flex-start; align-items: center; gap: 6px; font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 12px; font-weight: 500; letter-spacing: 0.14em; color: #6FB583;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>VERIFICADO</span>
+              <span style="font-family: 'Instrument Serif', Georgia, serif; font-size: clamp(2rem, 1.5833rem + 1.8519vw, 3.25rem); line-height: 1; font-variant-numeric: tabular-nums;">{{ k.value }}</span>
+              <p style="font-size: 14px; line-height: 1.5; color: #A9ABB3;">{{ k.label }}</p>
+              <span style="font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 12px; font-weight: 500; letter-spacing: 0.14em; color: #8A8E99;">{{ k.source }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <section id="contacto" data-screen-label="04 Contacto" style="padding: clamp(4rem, 2.6667rem + 5.9259vw, 8rem) 0 clamp(5rem, 3rem + 8vw, 10rem);">
+      <div style="max-width: 90rem; margin: 0 auto; padding: 0 clamp(1.25rem, 0.1667rem + 4.8148vw, 4.5rem); display: flex; flex-direction: column; align-items: center; text-align: center; gap: 28px;">
+        <span style="font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 12px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #8A8E99;">04 — CONTACTO</span>
+        <h2 style="font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: clamp(2.25rem, 1.6667rem + 2.5926vw, 4rem); line-height: 1.1; text-wrap: balance; max-width: 18ch;">¿Tienes una misión en mente? Preparemos el despegue.</h2>
+        <p style="font-size: clamp(1.125rem, 1.0833rem + 0.1852vw, 1.25rem); line-height: 1.5; color: #A9ABB3; max-width: 52ch; text-wrap: pretty;">Cuéntame qué necesitas y te respondo con un plan y un presupuesto en un plazo de 48 horas hábiles.</p>
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 12px;">
+          <a href="https://wa.me/51900000000" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 22px; background: #FF5A1F; color: #0B0D12; border-radius: 4px; font-size: 14px; font-weight: 500; line-height: 1.3; text-decoration: none; transition: background-color 120ms;" style-hover="background: #FF7A45; color: #0B0D12;">Escribir por WhatsApp<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+          <button type="button" onClick="{{ copyEmail }}" style="display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 22px; background: transparent; color: #F2EFE8; border: 1px solid #6A707C; border-radius: 4px; font-family: inherit; font-size: 14px; font-weight: 500; line-height: 1.3; cursor: pointer; transition: background-color 120ms;" style-hover="background: #1B2030;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"></rect><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path></svg>Copiar correo</button>
+        </div>
+        <span style="display: flex; align-items: center; gap: 8px; font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 12px; font-weight: 500; letter-spacing: 0.14em; color: #6FB583;"><span ref="{{ pulseRef2 }}" style="width: 8px; height: 8px; border-radius: 999px; background: #6FB583;"></span>DISPONIBLE · OCTUBRE 2026</span>
+      </div>
+    </section>
+  </main>
+
+  <footer data-screen-label="Pie" style="position: relative; z-index: 1; background: #10131A; border-top: 1px solid #363B47;">
+    <div style="max-width: 90rem; margin: 0 auto; padding: 0 clamp(1.25rem, 0.1667rem + 4.8148vw, 4.5rem);">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr)); gap: 1px; background: #23272F; border-left: 1px solid #23272F; border-right: 1px solid #23272F;">
+        <div aria-hidden="true" style="display: flex; flex-direction: column; gap: 6px; padding: 20px; background: #10131A;"><span style="font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 12px; font-weight: 500; letter-spacing: 0.14em; color: #8A8E99;">MISSION TIME</span><span style="font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 14px; letter-spacing: 0.02em; font-variant-numeric: tabular-nums;">{{ tPlus }}</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px; padding: 20px; background: #10131A;"><span style="font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 12px; font-weight: 500; letter-spacing: 0.14em; color: #8A8E99;">LIMA · UTC−5</span><span style="font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 14px; letter-spacing: 0.02em; font-variant-numeric: tabular-nums;">{{ limaTime }}</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px; padding: 20px; background: #10131A;"><span style="font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 12px; font-weight: 500; letter-spacing: 0.14em; color: #8A8E99;">CARGA</span><span style="font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 14px; letter-spacing: 0.02em; font-variant-numeric: tabular-nums;">{{ loadTime }}</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px; padding: 20px; background: #10131A;"><span style="font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 12px; font-weight: 500; letter-spacing: 0.14em; color: #8A8E99;">RESPUESTA</span><span style="font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 14px; letter-spacing: 0.02em; font-variant-numeric: tabular-nums;">{{ respTime }}</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px; padding: 20px; background: #10131A;"><span style="font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 12px; font-weight: 500; letter-spacing: 0.14em; color: #8A8E99;">ESTABILIDAD</span><span style="font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 14px; letter-spacing: 0.02em; font-variant-numeric: tabular-nums;">{{ stability }}</span></div>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; padding: 24px 0 32px; border-top: 1px solid #23272F; font-size: 14px; color: #8A8E99;">
+        <span>© 2026 Adrián Marchan · Lima, Perú</span>
+        <div style="display: flex; gap: 20px; align-items: center;">
+          <a href="#" style="color: #A9ABB3; text-decoration: none; min-height: 44px; display: flex; align-items: center;" style-hover="color: #F2EFE8;">LinkedIn</a>
+          <a href="#" style="color: #A9ABB3; text-decoration: none; min-height: 44px; display: flex; align-items: center;" style-hover="color: #F2EFE8;">GitHub</a>
+          <span aria-hidden="true" style="font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 12px; letter-spacing: 0.02em;">LAT −12.046 · LON −77.043</span>
+          <span style="font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 12px; letter-spacing: 0.02em;">v1.4.2</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <sc-if value="{{ paletteOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closePalette }}" style="position: fixed; inset: 0; z-index: 500; background: rgb(11 13 18 / 0.8); display: flex; justify-content: center; align-items: flex-start; padding: 14vh 20px 20px;">
+      <div role="dialog" aria-modal="true" aria-label="Consola de comandos" onClick="{{ stop }}" style="width: 100%; max-width: 560px; background: #1B2030; border: 1px solid #363B47; border-radius: 4px; overflow: hidden;">
+        <div style="display: flex; align-items: center; gap: 12px; padding: 0 16px; border-bottom: 1px solid #363B47;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8A8E99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9l3 3-3 3M13 15h4"></path></svg>
+          <input ref="{{ inputRef }}" value="{{ query }}" onChange="{{ onQuery }}" onKeyDown="{{ onInputKey }}" placeholder="Buscar una sección o acción" aria-label="Buscar comandos" style="flex: 1; min-height: 56px; background: transparent; border: none; outline: none; color: #F2EFE8; font-family: inherit; font-size: 16px;">
+          <span style="font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 12px; color: #8A8E99;">Esc</span>
+        </div>
+        <ul role="listbox" style="list-style: none; padding: 8px;">
+          <sc-for list="{{ commands }}" as="c" hint-placeholder-count="4">
+            <li role="option" aria-selected="{{ c.first }}">
+              <button type="button" onClick="{{ c.run }}" style="width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 48px; padding: 0 12px; background: {{ c.bg }}; border: none; border-radius: 2px; color: #F2EFE8; font-family: inherit; font-size: 15px; text-align: left; cursor: pointer;" style-hover="background: #151923;">
+                <span>{{ c.label }}</span>
+                <span style="font-family: 'Geist Mono', ui-monospace, Consolas, monospace; font-size: 12px; letter-spacing: 0.02em; color: #8A8E99;">{{ c.hint }}</span>
+              </button>
+            </li>
+          </sc-for>
+          <sc-if value="{{ noCommands }}" hint-placeholder-val="{{ false }}">
+            <li style="padding: 20px 12px; font-size: 14px; color: #8A8E99;">Sin resultados en este sector.</li>
+          </sc-if>
+        </ul>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+    <div role="status" style="position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 600; display: flex; align-items: center; gap: 10px; padding: 12px 18px; background: #1B2030; border: 1px solid #363B47; border-radius: 4px; font-size: 14px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6FB583" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>{{ toast }}
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;starDensity&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:2.5,&quot;min&quot;:0.3,&quot;max&quot;:2.5,&quot;step&quot;:0.1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Cielo&quot;},&quot;twinkle&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Cielo&quot;},&quot;shootingStars&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Cielo&quot;},&quot;defaultView&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;mapa&quot;,&quot;options&quot;:[&quot;mapa&quot;,&quot;cuadricula&quot;,&quot;lista&quot;],&quot;tsType&quot;:&quot;'mapa'|'cuadricula'|'lista'&quot;,&quot;section&quot;:&quot;Proyectos&quot;}}">
+class Component extends DCLogic {
+  state = { view: null, hovered: null, paletteOpen: false, query: '', now: Date.now(), wide: true, vw: 1440, toast: '' };
+  starsRef = React.createRef(); grainRef = React.createRef(); inputRef = React.createRef();
+  heroLabelRef = React.createRef(); heroLeadRef = React.createRef(); heroActionsRef = React.createRef();
+  pulseEls = [];
+  pulseRef = (el) => this.addPulse(el);
+  pulseRef2 = (el) => this.addPulse(el);
+  t0 = Date.now();
+  cls = 0;
+
+  MISSIONS = [
+    { code: 'M-014', cat: 'web', title: 'Portal de reservas para una clínica dental', summary: 'Agenda en línea conectada al calendario del equipo: menos llamadas y cero citas duplicadas.', year: 2026, status: 'pub', tags: ['Astro', 'TypeScript', 'GA4'], a: -38 },
+    { code: 'M-013', cat: 'shop', title: 'Tienda de café de especialidad', summary: 'Suscripciones mensuales, pagos locales y un catálogo que se actualiza desde una hoja de cálculo.', year: 2026, status: 'pub', tags: ['Shopify', 'Liquid', 'Klaviyo'], a: 20 },
+    { code: 'M-012', cat: 'auto', title: 'Cotizaciones B2B automáticas', summary: 'Del formulario al PDF y a WhatsApp en menos de un minuto, sin copiar datos a mano.', year: 2026, status: 'dev', tags: ['n8n', 'Google Sheets', 'WhatsApp API'], a: -150 },
+    { code: 'M-011', cat: 'web', title: 'Sitio para un estudio de arquitectura', summary: 'Portafolio editorial con carga diferida de imágenes y una ficha por obra.', year: 2025, status: 'pub', tags: ['Astro', 'Sanity'], a: 150 },
+    { code: 'M-010', cat: 'shop', title: 'Catálogo mayorista con pedidos por WhatsApp', summary: 'Pedidos armados en el catálogo y enviados como mensaje listo para confirmar.', year: 2025, status: 'pub', tags: ['Next.js', 'Supabase'], a: -120 },
+    { code: 'M-009', cat: 'auto', title: 'Panel de indicadores comerciales', summary: 'Ventas, margen y stock en un solo tablero que se actualiza cada mañana.', year: 2025, status: 'arc', tags: ['Looker Studio', 'BigQuery'], a: 35 },
+    { code: 'M-008', cat: 'web', title: 'Landing de lanzamiento para una app financiera', summary: 'Página de espera con lista de acceso anticipado y pruebas A/B de mensajes.', year: 2025, status: 'arc', tags: ['Astro', 'Plausible'], a: 70 }
+  ];
+  ORBITS = { web: { rx: 250, ry: 105, label: 'Web' }, shop: { rx: 390, ry: 170, label: 'E-commerce' }, auto: { rx: 530, ry: 238, label: 'Automatización' } };
+  STATUS = { pub: ['PUBLICADO', '#6FB583'], dev: ['EN DESARROLLO', '#E2BD4F'], arc: ['ARCHIVADO', '#8A8E99'] };
+
+  addPulse(el) {
+    if (!el || this.pulseEls.includes(el)) return;
+    this.pulseEls.push(el);
+    if (this.mounted && !this.reduced) this.pulse(el);
+  }
+  pulse(el) { el.animate([{ opacity: 1 }, { opacity: 0.3 }, { opacity: 1 }], { duration: 2400, iterations: Infinity, easing: 'ease-in-out' }); }
+
+  componentDidMount() {
+    this.mounted = true;
+    this.reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.onResize = () => { this.setState({ wide: window.innerWidth >= 1024, vw: window.innerWidth }); this.initStars(); if (this.reduced) this.draw(0); };
+    this.onKey = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); this.state.paletteOpen ? this.close() : this.open(); }
+      else if (e.key === 'Escape' && this.state.paletteOpen) this.close();
+    };
+    window.addEventListener('resize', this.onResize);
+    window.addEventListener('keydown', this.onKey);
+    this.setState({ wide: window.innerWidth >= 1024, vw: window.innerWidth });
+    this.initStars();
+    this.nextShoot = 2500;
+    if (this.reduced) this.draw(0);
+    else { this.loop = (t) => { this.draw(t); this.raf = requestAnimationFrame(this.loop); }; this.raf = requestAnimationFrame(this.loop); }
+    this.makeGrain();
+    if (!this.reduced) {
+      [this.heroLabelRef, this.heroLeadRef, this.heroActionsRef].forEach((r, i) => r.current && r.current.animate(
+        [{ opacity: 0, transform: 'translateY(12px)' }, { opacity: 1, transform: 'translateY(0)' }],
+        { duration: 480, delay: 120 + i * 150, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'backwards' }));
+      this.pulseEls.forEach((el) => this.pulse(el));
+    }
+    this.clock = setInterval(() => this.setState({ now: Date.now() }), 1000);
+    try {
+      this.po = new PerformanceObserver((l) => { l.getEntries().forEach((e) => { if (!e.hadRecentInput) this.cls += e.value; }); });
+      this.po.observe({ type: 'layout-shift', buffered: true });
+    } catch (e) {}
+  }
+  componentWillUnmount() {
+    cancelAnimationFrame(this.raf); clearInterval(this.clock); clearTimeout(this.toastT);
+    window.removeEventListener('resize', this.onResize); window.removeEventListener('keydown', this.onKey);
+    this.po && this.po.disconnect();
+  }
+  componentDidUpdate(prev) {
+    if (prev.starDensity !== this.props.starDensity) { this.initStars(); if (this.reduced) this.draw(0); }
+    if (prev.defaultView !== this.props.defaultView) this.setState({ view: null });
+  }
+
+  initStars() {
+    const c = this.starsRef.current; if (!c) return;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const w = window.innerWidth, h = window.innerHeight;
+    c.width = w * dpr; c.height = h * dpr; c.style.width = w + 'px'; c.style.height = h + 'px';
+    this.ctx = c.getContext('2d'); this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    this.W = w; this.H = h;
+    const d = this.props.starDensity ?? 1;
+    const n = Math.round((w * h) / 1100 * d);
+    const g = () => (Math.random() + Math.random() + Math.random() - 1.5) / 1.5;
+    const stars = [];
+    for (let i = 0; i < n; i++) {
+      let x, y;
+      if (Math.random() < 0.38) { const t = Math.random(); x = t * w; y = h * (0.92 - 0.8 * t) + g() * h * 0.09; }
+      else { x = Math.random() * w; y = Math.random() * h; }
+      const rl = Math.random();
+      const layer = rl < 0.62 ? 0 : rl < 0.92 ? 1 : 2;
+      const r = layer === 0 ? 0.3 + Math.random() * 0.4 : layer === 1 ? 0.55 + Math.random() * 0.55 : 0.9 + Math.random() * 0.9;
+      const a = layer === 0 ? 0.22 + Math.random() * 0.3 : 0.45 + Math.random() * 0.5;
+      const rc = Math.random();
+      const col = rc < 0.12 ? '196,212,255' : rc < 0.2 ? '255,224,200' : '242,239,232';
+      stars.push({ x, y, r, a, layer, col, ph: Math.random() * 6.28, sp: 0.4 + Math.random() * 1.6 });
+    }
+    this.stars = stars;
+  }
+
+  draw(t) {
+    const { ctx, W, H, stars } = this; if (!ctx || !stars) return;
+    ctx.clearRect(0, 0, W, H);
+    const sy = this.reduced ? 0 : window.scrollY;
+    const f = [0.012, 0.03, 0.055];
+    const tw = (this.props.twinkle ?? true) && !this.reduced;
+    for (let i = 0; i < stars.length; i++) {
+      const s = stars[i];
+      let y = (s.y - sy * f[s.layer]) % H; if (y < 0) y += H;
+      let a = s.a;
+      if (tw && s.layer > 0) a *= 0.6 + 0.4 * Math.sin(t * 0.001 * s.sp + s.ph);
+      if (s.r > 1.35) { ctx.fillStyle = 'rgba(' + s.col + ',' + (a * 0.1) + ')'; ctx.beginPath(); ctx.arc(s.x, y, s.r * 4, 0, 6.283); ctx.fill(); }
+      ctx.fillStyle = 'rgba(' + s.col + ',' + a + ')'; ctx.beginPath(); ctx.arc(s.x, y, s.r, 0, 6.283); ctx.fill();
+    }
+    if ((this.props.shootingStars ?? true) && !this.reduced) {
+      if (!this.shoot && t > this.nextShoot) {
+        const ang = Math.PI * (0.72 + Math.random() * 0.12);
+        this.shoot = { x: W * (0.35 + Math.random() * 0.6), y: H * Math.random() * 0.35, ang, len: Math.max(W, H) * 0.3, start: t, dur: 1100 };
+      }
+      const s = this.shoot;
+      if (s) {
+        const p = (t - s.start) / s.dur;
+        if (p >= 1) { this.shoot = null; this.nextShoot = t + 6000 + Math.random() * 9000; }
+        else {
+          const e = 1 - Math.pow(1 - p, 3);
+          const hx = s.x + Math.cos(s.ang) * s.len * e, hy = s.y + Math.sin(s.ang) * s.len * e;
+          const tl = 140 * (1 - p * 0.5);
+          const tx = hx - Math.cos(s.ang) * tl, ty = hy - Math.sin(s.ang) * tl;
+          const gr = ctx.createLinearGradient(hx, hy, tx, ty);
+          const al = Math.sin(p * Math.PI);
+          gr.addColorStop(0, 'rgba(242,239,232,' + (0.9 * al) + ')'); gr.addColorStop(1, 'rgba(242,239,232,0)');
+          ctx.strokeStyle = gr; ctx.lineWidth = 1.2; ctx.lineCap = 'round';
+          ctx.beginPath(); ctx.moveTo(hx, hy); ctx.lineTo(tx, ty); ctx.stroke();
+        }
+      }
+    }
+  }
+
+  makeGrain() {
+    const el = this.grainRef.current; if (!el) return;
+    const c = document.createElement('canvas'); c.width = c.height = 160;
+    const x = c.getContext('2d'); const img = x.createImageData(160, 160);
+    for (let i = 0; i < img.data.length; i += 4) { const v = Math.random() * 255; img.data[i] = img.data[i + 1] = img.data[i + 2] = v; img.data[i + 3] = 255; }
+    x.putImageData(img, 0, 0);
+    el.style.backgroundImage = 'url(' + c.toDataURL() + ')';
+  }
+
+  go(id, e) {
+    if (e && e.preventDefault) e.preventDefault();
+    const el = document.getElementById(id); if (!el) return;
+    window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - (id === 'inicio' ? 72 : 64), behavior: this.reduced ? 'auto' : 'smooth' });
+  }
+  open() { this.setState({ paletteOpen: true, query: '' }, () => setTimeout(() => this.inputRef.current && this.inputRef.current.focus(), 0)); }
+  close() { this.setState({ paletteOpen: false }); }
+  showToast(msg) { clearTimeout(this.toastT); this.setState({ toast: msg }); this.toastT = setTimeout(() => this.setState({ toast: '' }), 2200); }
+  copyEmail() { try { navigator.clipboard && navigator.clipboard.writeText('hola@adrianmarchan.com'); } catch (e) {} this.showToast('Correo copiado'); }
+
+  getCommands() {
+    const all = [
+      { label: 'Ir a Proyectos', hint: '01', run: () => { this.close(); this.go('proyectos'); } },
+      { label: 'Ir a Servicios', hint: '02', run: () => { this.close(); this.go('servicios'); } },
+      { label: 'Ir a Resultados', hint: '03', run: () => { this.close(); this.go('prueba'); } },
+      { label: 'Ir a Contacto', hint: '04', run: () => { this.close(); this.go('contacto'); } },
+      { label: 'Escribir por WhatsApp', hint: 'Enlace externo', run: () => { this.close(); window.open('https://wa.me/51900000000', '_blank'); } },
+      { label: 'Copiar correo', hint: 'hola@adrianmarchan.com', run: () => { this.close(); this.copyEmail(); } },
+      { label: 'Ver misiones en el mapa', hint: 'Vista', run: () => { this.close(); this.setState({ view: 'mapa' }); this.go('proyectos'); } }
+    ];
+    const q = this.state.query.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    return q ? all.filter((c) => c.label.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes(q)) : all;
+  }
+
+  renderVals() {
+    const view = this.state.view ?? this.props.defaultView ?? 'mapa';
+    const wide = this.state.wide;
+    const hov = this.state.hovered;
+    const missions = this.MISSIONS.map((m) => {
+      const o = this.ORBITS[m.cat];
+      const rad = (m.a * Math.PI) / 180;
+      const px = ((600 + o.rx * Math.cos(rad)) / 1200) * 100;
+      const py = ((300 + o.ry * Math.sin(rad)) / 600) * 100;
+      const on = hov === m.code;
+      const st = this.STATUS[m.status];
+      return {
+        ...m, px, py, left: px + '%', top: py + '%', catLabel: o.label.toUpperCase(),
+        status: st[0], statusColor: st[1],
+        dot: on ? '#FF5A1F' : '#F2EFE8', ring: on ? '#FF5A1F' : '#363B47', codeColor: on ? '#F2EFE8' : '#8A8E99', z: on ? 4 : 2,
+        aria: m.code + ': ' + m.title + '. ' + st[0],
+        enter: () => this.setState({ hovered: m.code }),
+        leave: () => this.setState((s) => (s.hovered === m.code ? { hovered: null } : null)),
+        open: (e) => { e.preventDefault(); this.showToast('La ficha de ' + m.code + ' está en preparación'); }
+      };
+    });
+    const h = missions.find((m) => m.code === hov);
+    const hm = h ? {
+      ...h,
+      left: h.left, top: Math.min(Math.max(h.py, 24), 76) + '%',
+      transform: h.px > 55 ? 'translate(calc(-100% - 30px), -50%)' : 'translate(30px, -50%)'
+    } : {};
+    const views = [['mapa', 'Mapa'], ['cuadricula', 'Cuadrícula'], ['lista', 'Lista']];
+    const cmds = this.getCommands().map((c, i) => ({ ...c, first: i === 0 ? 'true' : 'false', bg: i === 0 ? '#151923' : 'transparent' }));
+
+    const now = this.state.now;
+    const el = Math.floor((now - this.t0) / 1000);
+    const pad = (n) => String(n).padStart(2, '0');
+    const tPlus = 'T+' + pad(Math.floor(el / 3600)) + ':' + pad(Math.floor((el % 3600) / 60)) + ':' + pad(el % 60);
+    const lima = new Intl.DateTimeFormat('es-PE', { timeZone: 'America/Lima', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+    const limaS = new Intl.DateTimeFormat('es-PE', { timeZone: 'America/Lima', hour: '2-digit', minute: '2-digit', hour12: false });
+    let loadTime = '—', respTime = '—';
+    try {
+      const nav = performance.getEntriesByType('navigation')[0];
+      if (nav && nav.domContentLoadedEventEnd) loadTime = new Intl.NumberFormat('es-PE', { maximumFractionDigits: 1, minimumFractionDigits: 1 }).format(nav.domContentLoadedEventEnd / 1000) + ' s';
+      if (nav && nav.responseEnd) respTime = Math.round(nav.responseEnd - nav.requestStart) + ' ms';
+    } catch (e) {}
+    const isMac = /Mac|iPhone|iPad/.test(navigator.platform || '');
+
+    return {
+      starsRef: this.starsRef, grainRef: this.grainRef, inputRef: this.inputRef,
+      heroLabelRef: this.heroLabelRef, heroLeadRef: this.heroLeadRef, heroActionsRef: this.heroActionsRef,
+      pulseRef: this.pulseRef, pulseRef2: this.pulseRef2,
+      kbdLabel: isMac ? 'Cmd K' : 'Ctrl K',
+      navItems: [['01', 'Proyectos', 'proyectos'], ['02', 'Servicios', 'servicios'], ['03', 'Resultados', 'prueba'], ['04', 'Contacto', 'contacto']]
+        .map(([num, label, id]) => ({ num, label, href: '#' + id, go: (e) => this.go(id, e) })),
+      goInicio: (e) => this.go('inicio', e), goProyectos: (e) => this.go('proyectos', e),
+      missionCount: missions.length, publishedCount: missions.filter((m) => m.status === 'PUBLICADO').length, missions,
+      showHeaderStatus: this.state.vw >= 1180,
+      showNav: this.state.vw >= 1024, showNavNums: this.state.vw >= 1180, navPad: this.state.vw >= 1180 ? '12px' : '8px', hasHover: !!h, hm,
+      viewOptions: views.map(([id, label]) => ({
+        label, pressed: view === id ? 'true' : 'false',
+        bg: view === id ? '#1B2030' : 'transparent', color: view === id ? '#F2EFE8' : '#8A8E99', border: view === id ? '#FF5A1F' : 'transparent',
+        select: () => this.setState({ view: id, hovered: null })
+      })),
+      showMap: view === 'mapa' && wide, showTrajectory: view === 'mapa' && !wide, showGrid: view === 'cuadricula', showList: view === 'lista',
+      services: [
+        { num: '01', title: 'Sitios web', body: 'Rápidos, accesibles y pensados para que te encuentren y te escriban.' },
+        { num: '02', title: 'Tiendas en línea', body: 'Catálogo, pagos y pedidos que funcionan desde el primer día.' },
+        { num: '03', title: 'Automatización', body: 'Flujos que conectan formularios, hojas y WhatsApp para quitarte tareas repetidas.' },
+        { num: '04', title: 'SEO técnico', body: 'Estructura, velocidad y datos estructurados para ganar visibilidad orgánica.' },
+        { num: '05', title: 'Analítica', body: 'Medición clara para decidir con datos y no con intuiciones.' }
+      ],
+      metrics: [
+        { value: '+38 %', label: 'Conversión de la tienda de café tras el rediseño del proceso de compra.', source: 'GA4 · ENE–JUN 2026' },
+        { value: '1,1 s', label: 'Carga del contenido principal en móvil en el portal de reservas.', source: 'PAGESPEED · SEP 2026' },
+        { value: '12 h', label: 'Horas semanales ahorradas con las cotizaciones automáticas.', source: 'REGISTRO DEL CLIENTE · 2026' }
+      ],
+      tPlus, limaTime: lima.format(now), limaShort: limaS.format(now), loadTime, respTime,
+      stability: new Intl.NumberFormat('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(this.cls),
+      paletteOpen: this.state.paletteOpen, query: this.state.query, commands: cmds, noCommands: cmds.length === 0,
+      openPalette: () => this.open(), closePalette: () => this.close(), stop: (e) => e.stopPropagation(),
+      onQuery: (e) => this.setState({ query: e.target.value }),
+      onInputKey: (e) => { if (e.key === 'Enter' && cmds[0]) cmds[0].run(); },
+      copyEmail: () => this.copyEmail(),
+      toast: this.state.toast
+    };
+  }
+}
+</script>
+</body>
+</html>

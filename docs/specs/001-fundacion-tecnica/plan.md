@@ -162,6 +162,21 @@ La prueba lee archivos con `node:fs`, y `astro check` revisa todos los `.ts` del
 
 `scripts/check-size-budget.mjs` la aplica a `dist/index.html`, imprime los dos totales y falla por encima de **180 kB de JS o 40 kB de CSS** (CA-N01.4).
 
+Decisiones de T9, todas por cómo está redactado CA-N01.4:
+
+- **kB = 1000 bytes**, el prefijo del SI, no 1024.
+- **El límite es estricto**: el requisito pide quedar «por debajo de», así que 180 000 bytes exactos ya incumplen. Es la misma lectura que el `0.099` del desplazamiento visual. Por eso el módulo separa `measurePageWeight` (medir) de `budgetFailures` (decidir): acertar un gzip de exactamente 180 000 bytes en una prueba es inviable, y el borde del límite sí se prueba con números sintéticos.
+- **Solo cuenta el JavaScript que es código**: un `<script>` cuyo `type` no sea vacío, `module`, `text/javascript` ni `application/javascript` no suma, porque CA-N01.4 limita el «código de comportamiento». Deja fuera `application/ld+json`, `importmap` y `speculationrules`. **Importa para la 003**, que trae datos estructurados a la portada.
+- Cada activo se comprime **por separado** y se suman los tamaños: exacto para los externos y una sobreestimación —nunca una subestimación— para los que van dentro del HTML.
+- Un activo citado y no medible (otro origen, `data:`, o un archivo que no está en `dist/`) **no se ignora en silencio**: sale por `unresolved` y el ejecutable falla. Un activo que desaparece y hace bajar el total es el falso verde que esta puerta no debe permitir.
+**Límites conocidos** del escáner, todos anotados al revisar T9:
+
+- Un `<style … />` autocerrado se trata como elemento vacío. El analizador del navegador no lo honraría, pero Astro no lo emite y así un cierre suelto no se traga el resto del documento (falso positivo que ya mordió en T6).
+- **Solo se ve el JavaScript que el HTML nombra.** Un fragmento alcanzado por `import()` dinámico no aparece en el documento —Vite lo carga en tiempo de ejecución, no con un `<link>`—, así que hoy no entra en el presupuesto aunque CA-N01.4 sí lo cubra. Con la portada en 0 kB de JS es teórico, pero **deja de serlo en cuanto llegue la primera isla**: con ADR-005 (GSAP para animación), cargarlo por `import()` diferido escondería 70-90 kB con gzip. **La 002 o la 007 tienen que cerrarlo** siguiendo el grafo de importaciones de los `.js` de `dist/` desde cada entrada citada. Lo mismo, en menor grado, para un `@import` dentro de una hoja externa, que hoy Tailwind resuelve en build.
+- Una etiqueta con más de 4000 unidades de atributos no casa con `TAG` y **se salta en silencio**, sin pasar por `unresolved`; además su cuerpo se escanea como HTML, así que un `<link>` escrito dentro de una cadena contaría como activo real. Astro no produce nada parecido (un valor entrecomillado cuenta como una sola unidad), y hacerlo ruidoso daría falsos positivos con cualquier `<` de la prosa, así que se deja acotado y escrito.
+- `assetPath` no normaliza segmentos interiores: `/_astro/./x.js` y `/_astro/x.js` dan claves distintas y el archivo se contaría dos veces. Sobrecuenta, nunca subcuenta.
+- **Los dos ejecutables, `check-literals.mjs` y `check-size-budget.mjs`, siguen sin prueba automática** (regla 1). T6 lo dejó pendiente por falta de los tipos de Node, que T7 ya instaló; probarlos exige lanzar el proceso y preparar un `dist/` de mentira, que es tarea propia. Sus salvaguardas sí se han visto en rojo a mano.
+
 ### Pruebas de navegador (CA-4, CA-6, CA-9, accesibilidad)
 
 `playwright.config.ts`: Chromium, `webServer` con `pnpm preview` en el puerto **4323** y `reuseExistingServer: false` siempre. Ajustado al implementar T8: el 4321 suele tener un `astro dev` de Adrián y el 4322 es el `preview` del navegador integrado (`.claude/launch.json`); reutilizar cualquiera de los dos probaría otro servidor en vez del `dist/` recién construido, que es lo que estas pruebas verifican. Si el puerto está ocupado, Playwright falla con un error claro. `tests/e2e/foundation.spec.ts`:
@@ -246,7 +261,7 @@ Descartados a propósito: gestores de hooks (`husky`, `lefthook`), porque `core.
 - **Puertas demostradas fallando**, un cambio provocado cada una. Se guarda la salida en rojo como evidencia y se revierte el cambio:
   1. `class="bg-[#fff]"` en `index.astro` → `pnpm check` falla con archivo y línea.
   2. `--color-fg-subtle` oscurecido a `#5A5E69` → `pnpm test design-tokens` falla con el par y el ratio.
-  3. Un `<script>` en línea de más de 180 kB → `pnpm perf` falla por tamaño y por tiempo de bloqueo.
+  3. Un `<script>` en línea de más de 180 kB → `pnpm perf` falla por tamaño y por rendimiento. Corregido al ejecutarlo en T9: el relleno tiene que ser **incompresible** (base64 aleatorio) para pasar de 180 kB *con gzip*, y un script que bloquea el análisis del documento **no mueve el tiempo de bloqueo**, porque este se mide entre el primer pintado y la interactividad: su coste va a LCP. Se demuestra en dos señuelos, 3a (tamaño, puntuación y LCP) y 3b (tarea larga de 400 ms lanzada tras el primer pintado → tiempo de bloqueo).
   4. Una aserción rota en un test → `git commit` bloqueado por el hook.
   5. Una propuesta de cambio con una prueba en rojo → comprobación roja en GitHub y ningún despliegue de previsualización.
 - **Datos de prueba**: casos en línea dentro de cada test. Esta spec no tiene contenido: eso es la 002.
