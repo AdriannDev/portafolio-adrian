@@ -27,6 +27,17 @@ test-results/
 playwright-report/
 coverage/
 
+# Exportaciones sueltas de la herramienta de diseño: duplican design/portada-universo/ y design/moodboards/,
+# que sí se versionan porque son la referencia visual del roadmap y de sistema-diseno.md §14.
+# Se quedan en disco como material de trabajo, fuera del repositorio
+/design/.thumbnail
+/design/Portada Universo.dc.html
+/design/support.js
+/design/uploads/
+
+# Material comprimido de referencia, no código del producto
+*.zip
+
 # Sistema
 .DS_Store
 Thumbs.db
