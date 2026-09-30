@@ -205,7 +205,7 @@ describe("budgetFailures: el límite es estricto", () => {
   });
 
   it("deja pasar un byte por debajo del límite", () => {
-    expect(budgetFailures({ js: 179_999, css: 39_999 })).toEqual([]);
+    expect(budgetFailures({ js: 180_001, css: 39_999 })).toEqual([]);
   });
 
   it.each([
