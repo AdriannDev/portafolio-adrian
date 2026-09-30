@@ -68,9 +68,11 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
 
-  # Una versión subida sin desplegar, con un alias fijo por propuesta (pr-N) que apunta siempre a la última (CA-13)
+  # Una versión subida sin desplegar, con un alias fijo por propuesta (pr-N) que apunta siempre a la última (CA-13).
+  # Solo para ramas de este repositorio: el repositorio es público, y una propuesta desde un fork no recibe los secretos
+  # de Cloudflare ni un token con escritura, así que saldría en rojo sin culpa de quien la abre
   deploy-preview:
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
     needs: verify
     runs-on: ubuntu-24.04
     timeout-minutes: 10

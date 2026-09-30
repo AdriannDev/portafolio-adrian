@@ -165,6 +165,13 @@ describe("measurePageWeight: bordes del escáner", () => {
     });
   });
 
+  it("no salta en silencio una etiqueta que no puede analizar", () => {
+    // Más atributos sin comillas de los que admite el tope del regex: sin la guardia, el script dejaba de contarse
+    const html = `<script ${"data-x ".repeat(700)}src="/_astro/island.js"></script>`;
+    const weight = measurePageWeight(html, publishing({ "_astro/island.js": SCRIPT }));
+    expect(weight.unresolved).toEqual(["<script> sin analizar en la posición 0"]);
+  });
+
   it.each([["<!-->"], ["<!--->"]])("cierra el comentario abreviado %s donde lo cierra el navegador", (comment) => {
     const html = `${comment}<link rel="stylesheet" href="/_astro/index.css">`;
     expect(measurePageWeight(html, publishing({ "_astro/index.css": STYLES })).css).toBe(gz(STYLES));
