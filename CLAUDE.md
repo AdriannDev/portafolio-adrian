@@ -86,5 +86,5 @@ explorador (mapear código) · revisor-codigo (revisar diff vs spec) · revisor-
 - Entorno Windows 11 + Git Bash. Los hooks del kit corren con `python` (3.12.2 instalado).
 - Los archivos de texto van en UTF-8 sin BOM y con finales de línea LF (`.gitattributes` lo fuerza). Al escribir archivos con Python usa `newline="\n"`: en Windows convierte a CRLF por defecto.
 - Para comprobar finales de línea usa `git ls-files --eol` o cuenta bytes con Python. En este Git Bash, `grep -c $'\r'` devuelve el número de líneas del archivo, no los CR: da falsos positivos de CRLF.
-- Repositorio remoto: GitHub, privado, `AdriannDev/portafolio-adrian`. Sin protección de ramas (capa gratuita): una propuesta en rojo se puede fusionar, así que no se fusiona nada sin `verify` en verde. El único camino de despliegue es `ci.yml`; Workers Builds de Cloudflare va desconectado (docs/gotchas.md).
+- Repositorio remoto: GitHub, **público**, `AdriannDev/portafolio-adrian` (decisión del 2026-09-30). El ruleset de `main` exige `verify` en verde para integrar: todo entra por propuesta. El único camino de despliegue es `ci.yml`; Workers Builds de Cloudflare va desconectado (docs/gotchas.md).
 - La capa gratuita del servicio de correo tiene un tope de 100 envíos al día.

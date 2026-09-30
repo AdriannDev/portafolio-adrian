@@ -61,7 +61,7 @@ Solo publica la integración continua ([`.github/workflows/ci.yml`](.github/work
 1. **Propuesta de cambio** contra `main`: `verify` repite todas las comprobaciones de arriba. Si pasa, `deploy-preview` sube una versión sin desplegarla y el bot comenta en la propuesta dos direcciones: `https://pr-<número>-portafolio-adrian.pininodev.workers.dev`, que apunta siempre a la última versión verificada, y la de esa versión concreta. Una dirección nueva puede tardar alrededor de un minuto en responder; antes, Cloudflare devuelve «Page not found».
 2. **Integración en `main`**: `verify` y, si pasa, `deploy-production` publica en producción el mismo `dist/` que se verificó. Si `verify` falla, no se publica nada.
 
-Sin protección de ramas (repositorio privado en la capa gratuita), GitHub permite fusionar una propuesta en rojo: no la fusiones sin `verify` en verde.
+El ruleset de `main` exige `verify` en verde: GitHub no deja fusionar una propuesta en rojo ni empujar a `main` un commit sin verificar. Una propuesta desde un fork se verifica, pero no se previsualiza, porque no recibe los secretos de Cloudflare.
 
 No conectes el repositorio desde el panel de Cloudflare: activaría Workers Builds, un segundo camino de despliegue que no espera a `verify`.
 
@@ -101,7 +101,7 @@ El token con el que el bot comenta en las propuestas lo pone GitHub en cada ejec
 ## Coste
 
 - **Cloudflare Workers**, capa gratuita: las peticiones a activos estáticos son gratuitas e ilimitadas y se permite el uso comercial ([ADR-007](docs/02-arquitectura/decisiones/ADR-007-alojamiento-cloudflare-ci.md)).
-- **GitHub Actions**, repositorio privado: 2.000 minutos al mes gratis. Cada ejecución consume unos 3.
+- **GitHub Actions**, repositorio público: los minutos de los runners estándar son gratuitos e ilimitados. Cada ejecución tarda unos 3.
 - Coste previsto de operación: solo el dominio, cuando llegue (spec 015).
 
 ## Documentación
