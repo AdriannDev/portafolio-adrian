@@ -1,0 +1,12 @@
+// Publicación en Cloudflare Workers con activos estáticos (ADR-007). No hay código de Worker: se sirve dist/ tal cual,
+// y public/_headers (copiado a dist/) añade X-Robots-Tag: noindex hasta el lanzamiento (CA-17, spec 015).
+// Producción: https://portafolio-adrian.pininodev.workers.dev
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "portafolio-adrian",
+  "compatibility_date": "2026-09-26",
+  "assets": { "directory": "./dist" },
+  "workers_dev": true,
+  // Direcciones de previsualización por propuesta de cambio (T12, CA-13)
+  "preview_urls": true,
+}
